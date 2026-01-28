@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
@@ -30,7 +30,9 @@ const DUMMY_DATA: Dokumen[] = Array.from({ length: 323 }, (_, i) => ({
 export default function ValidasiKerjasamaPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
-
+useEffect(() => {
+  document.title = "SIKERMA - Validasi Kerjasama";
+}, []);
   /* search & pagination state */
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
@@ -42,7 +44,7 @@ export default function ValidasiKerjasamaPage() {
     return DUMMY_DATA.filter((item) =>
       `${item.nomor} ${item.judul} ${item.status}`
         .toLowerCase()
-        .includes(search.toLowerCase())
+        .includes(search.toLowerCase()),
     );
   }, [search]);
 
@@ -54,7 +56,6 @@ export default function ValidasiKerjasamaPage() {
   useMemo(() => {
     setPage(1);
   }, [search, limit]);
-
   /* ================= PAGINATION NUMBER ================= */
 
   const getPageNumbers = () => {
@@ -79,7 +80,7 @@ export default function ValidasiKerjasamaPage() {
         className={cn(
           "relative transition-all duration-300",
           "ml-0",
-          sidebarExpanded ? "md:ml-64" : "md:ml-[72px]"
+          sidebarExpanded ? "md:ml-64" : "md:ml-[72px]",
         )}
       >
         <div className="flex flex-col min-h-screen">
@@ -92,17 +93,6 @@ export default function ValidasiKerjasamaPage() {
                 <h1 className="text-xl md:text-2xl font-bold">
                   Validasi Dokumen
                 </h1>
-
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <RefreshCcw className="w-4 h-4 mr-1" />
-                    Refresh
-                  </Button>
-                  <Button variant="destructive" size="sm">
-                    <ArrowLeft className="w-4 h-4 mr-1" />
-                    Back
-                  </Button>
-                </div>
               </div>
 
               {/* CARD */}
@@ -216,7 +206,7 @@ export default function ValidasiKerjasamaPage() {
                         >
                           {p}
                         </Button>
-                      )
+                      ),
                     )}
 
                     <Button

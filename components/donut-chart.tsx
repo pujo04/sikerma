@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 type DonutData = {
-  name: string
-  value: number
-  color: string
-  detail: string
-}
+  name: string;
+  value: number;
+  color: string;
+  detail: string;
+};
 
 const data: DonutData[] = [
   {
@@ -36,12 +36,12 @@ const data: DonutData[] = [
     color: "#f97316",
     detail: "MoU: 0 | MoA: 0 | IA: 1",
   },
-]
+];
 
-const TOTAL = data.reduce((sum, d) => sum + d.value, 0)
+const TOTAL = data.reduce((sum, d) => sum + d.value, 0);
 
 export function DonutChart() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
     <Card className="border border-border">
@@ -74,9 +74,7 @@ export function DonutChart() {
                       key={`cell-${index}`}
                       fill={entry.color}
                       opacity={
-                        activeIndex === null || activeIndex === index
-                          ? 1
-                          : 0.25
+                        activeIndex === null || activeIndex === index ? 1 : 0.25
                       }
                     />
                   ))}
@@ -100,9 +98,7 @@ export function DonutChart() {
                 </>
               ) : (
                 <>
-                  <p className="text-xs text-muted-foreground">
-                    Total dokumen
-                  </p>
+                  <p className="text-xs text-muted-foreground">Total dokumen</p>
                   <p className="text-2xl font-bold text-foreground">
                     {TOTAL} Data
                   </p>
@@ -124,7 +120,7 @@ export function DonutChart() {
           {/* LEGEND (HOVER = AKTIFKAN DONUT) */}
           <div className="mt-6 w-full space-y-4">
             {data.map((item, index) => {
-              const isActive = activeIndex === index
+              const isActive = activeIndex === index;
 
               return (
                 <div
@@ -132,19 +128,14 @@ export function DonutChart() {
                   onMouseEnter={() => setActiveIndex(index)}
                   onMouseLeave={() => setActiveIndex(null)}
                   className={`flex items-center justify-between text-sm cursor-pointer rounded-md px-2 py-1 transition
-                    ${
-                      isActive
-                        ? "bg-muted"
-                        : "hover:bg-muted/40"
-                    }`}
+                    ${isActive ? "bg-muted" : "hover:bg-muted/40"}`}
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className="w-4 h-4 rounded-full"
                       style={{
                         backgroundColor: item.color,
-                        opacity:
-                          activeIndex === null || isActive ? 1 : 0.25,
+                        opacity: activeIndex === null || isActive ? 1 : 0.25,
                       }}
                     />
                     <div>
@@ -156,16 +147,12 @@ export function DonutChart() {
                       >
                         {item.name}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        Jumlah
-                      </p>
+                      <p className="text-xs text-muted-foreground">Jumlah</p>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <p className="font-semibold">
-                      {item.value} Data
-                    </p>
+                    <p className="font-semibold">{item.value} Data</p>
                     <p
                       className="text-xs"
                       style={{
@@ -176,11 +163,11 @@ export function DonutChart() {
                     </p>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

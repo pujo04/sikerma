@@ -6,7 +6,6 @@ import {
   Maximize2,
   Moon,
   User,
-  BookOpen,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,15 +15,82 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+
+/* ================= PROPS ================= */
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
+/* ================= MENU (SAMA DENGAN SIDEBAR) ================= */
+
+type MenuNode = {
+  label: string;
+  href?: string;
+  children?: MenuNode[];
+};
+
+const menuTree: MenuNode[] = [
+  {
+    label: "Dashboard",
+    href: "/",
+  },
+  {
+    label: "Kerjasama",
+    children: [
+      { label: "Validasi Kerjasama", href: "/kerjasama/validasi-kerjasama" },
+      { label: "Repository", href: "/kerjasama/repository" },
+      { label: "My Data", href: "/kerjasama/my-data" },
+      { label: "Dokumen Subunit", href: "/kerjasama/subunit" },
+      { label: "Target Kerjasama", href: "/kerjasama/target" },
+      { label: "Capaian", href: "/kerjasama/capaian" },
+      { label: "Realisasi Kegiatan", href: "/kerjasama/realisasi" },
+    ],
+  },
+  {
+    label: "Pencairan Dana",
+    href: "/pencairan-dana",
+  },
+  {
+    label: "Laporan",
+    href: "/laporan",
+  },
+  {
+    label: "Profile",
+    href: "/profile",
+  },
+];
+
+/* ================= HELPERS ================= */
+
+// cari label dari menu sidebar
+function findLabel(path: string, menus: MenuNode[]): string | null {
+  for (const menu of menus) {
+    if (menu.href === path) return menu.label;
+    if (menu.children) {
+      const found = findLabel(path, menu.children);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+// normalisasi segment (edit / create / id)
+function normalizeSegment(segment: string): string | null {
+  if (segment === "create") return "Create";
+  if (segment === "edit") return "Edit";
+  if (/^\d+$/.test(segment)) return null; // ID diabaikan
+  return segment;
+}
+
+/* ================= RELATED APPS ================= */
+
 const relatedApps = [
   {
     name: "UNILA",
-    icon: "https://upload.wikimedia.org/wikipedia/id/thumb/f/ff/Logo_UnivLampung.png/913px-Logo_UnivLampung.png?20181126101349",
+    icon: "https://upload.wikimedia.org/wikipedia/id/thumb/f/ff/Logo_UnivLampung.png/913px-Logo_UnivLampung.png",
     url: "https://www.unila.ac.id",
   },
   {
@@ -39,7 +105,7 @@ const relatedApps = [
   },
   {
     name: "DIKTI",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Logo_of_Ministry_of_Education_and_Culture_of_Republic_of_Indonesia.svg/1200px-Logo_of_Ministry_of_Education_and_Culture_of_Republic_of_Indonesia.svg.png",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_of_Ministry_of_Education_and_Culture_of_Republic_of_Indonesia.svg",
     url: "https://dikti.kemdikbud.go.id",
   },
   {
@@ -54,7 +120,27 @@ const relatedApps = [
   },
 ];
 
+/* ================= COMPONENT ================= */
+
 export function Header({ onMenuClick }: HeaderProps) {
+  const pathname = usePathname();
+  const segments = pathname.split("/").filter(Boolean);
+  const router = useRouter(); // ✅ TAMBAHKAN
+  const breadcrumbs = segments.reduce<
+    { label: string; path: string }[]
+  >((acc, segment, index) => {
+    const normalized = normalizeSegment(segment);
+    if (!normalized) return acc;
+
+    const path = "/" + segments.slice(0, index + 1).join("/");
+    const label =
+      findLabel(path, menuTree) ??
+      normalized.charAt(0).toUpperCase() + normalized.slice(1);
+
+    acc.push({ label, path });
+    return acc;
+  }, []);
+
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
@@ -69,10 +155,24 @@ export function Header({ onMenuClick }: HeaderProps) {
             <Menu className="w-5 h-5" />
           </Button>
 
+          {/* BREADCRUMB */}
           <nav className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
             <span className="text-primary font-medium">Home</span>
-            <span className="mx-2">/</span>
-            <span>Dashboard</span>
+
+            {breadcrumbs.map((item, index) => (
+              <span key={item.path} className="flex items-center gap-1">
+                <span className="mx-2">/</span>
+                <span
+                  className={
+                    index === breadcrumbs.length - 1
+                      ? "text-primary font-medium"
+                      : ""
+                  }
+                >
+                  {item.label}
+                </span>
+              </span>
+            ))}
           </nav>
         </div>
 
@@ -88,7 +188,6 @@ export function Header({ onMenuClick }: HeaderProps) {
 
             <DropdownMenuContent align="end" className="w-72 p-4">
               <p className="mb-3 text-sm font-semibold">Aplikasi Terkait</p>
-
               <div className="grid grid-cols-3 gap-4">
                 {relatedApps.map((app) => (
                   <a
@@ -126,13 +225,13 @@ export function Header({ onMenuClick }: HeaderProps) {
               <Button
                 variant="ghost"
                 className="
-                  flex items-center gap-3 px-3 py-2
-                  rounded-full
-                  hover:bg-muted
-                  focus-visible:bg-muted
-                  data-[state=open]:bg-muted
-                  transition-colors
-                "
+        flex items-center gap-3 px-3 py-2
+        rounded-full
+        hover:bg-muted
+        focus-visible:bg-muted
+        data-[state=open]:bg-muted
+        transition-colors
+      "
               >
                 {/* AVATAR */}
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
@@ -166,18 +265,14 @@ export function Header({ onMenuClick }: HeaderProps) {
 
               {/* MENU */}
               <div className="py-2 px-1 space-y-1">
-                <DropdownMenuItem className="gap-3 px-3 py-2 rounded-md">
+                <DropdownMenuItem
+                  className="gap-3 px-3 py-2 rounded-md cursor-pointer"
+                  onClick={() => router.push("/profile")}
+                >
                   <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
                     <User className="w-4 h-4 text-white" />
                   </div>
                   <span>Profile</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem className="gap-3 px-3 py-2 rounded-md">
-                  <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
-                    <BookOpen className="w-4 h-4 text-white" />
-                  </div>
-                  <span>Panduan</span>
                 </DropdownMenuItem>
               </div>
 
@@ -188,13 +283,13 @@ export function Header({ onMenuClick }: HeaderProps) {
               <div className="px-1 pb-2">
                 <DropdownMenuItem
                   className="
-        gap-3 px-3 py-2 rounded-md
-        text-red-600
-        hover:text-red-600
-        focus:text-red-600
-        hover:bg-red-50
-        focus:bg-red-50
-      "
+          gap-3 px-3 py-2 rounded-md
+          text-red-600
+          hover:text-red-600
+          focus:text-red-600
+          hover:bg-red-50
+          focus:bg-red-50
+        "
                 >
                   <div className="w-8 h-8 rounded-md bg-red-500 flex items-center justify-center">
                     <LogOut className="w-4 h-4 text-white" />

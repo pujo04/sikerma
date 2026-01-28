@@ -22,7 +22,9 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 export default function EditRepositoryPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
-
+useEffect(() => {
+  document.title = "SIKERMA - Repository";
+}, []);
   /* ===== UI STATE ===== */
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
@@ -70,18 +72,18 @@ export default function EditRepositoryPage() {
     email: "",
     website: "",
   });
-  
-//Bentuk Kegiatan
-    const [openBentukKegiatan, setOpenBentukKegiatan] = useState(false)
-    const [bentukKegiatan, setBentukKegiatan] = useState({
-        bentuk: "",
-        penerimaan: "",
-        volume: "",
-        satuan: "",
-        sasaran: "",
-        indikator: "",
-        keterangan: "",
-    })
+
+  //Bentuk Kegiatan
+  const [openBentukKegiatan, setOpenBentukKegiatan] = useState(false);
+  const [bentukKegiatan, setBentukKegiatan] = useState({
+    bentuk: "",
+    penerimaan: "",
+    volume: "",
+    satuan: "",
+    sasaran: "",
+    indikator: "",
+    keterangan: "",
+  });
 
   /* ===== PENGGIAT LIST ===== */
   const [penggiatList, setPenggiatList] = useState([
@@ -542,7 +544,7 @@ export default function EditRepositoryPage() {
   };
 
   /* ===== RENDER ===== */
-  return (  
+  return (
     <div className="min-h-screen bg-background">
       <Sidebar
         open={sidebarOpen}
@@ -553,7 +555,7 @@ export default function EditRepositoryPage() {
       <div
         className={cn(
           "relative transition-all duration-300",
-          sidebarExpanded ? "md:ml-64" : "md:ml-[72px]"
+          sidebarExpanded ? "md:ml-64" : "md:ml-[72px]",
         )}
       >
         <Header onMenuClick={() => setSidebarOpen(true)} />
@@ -780,417 +782,479 @@ export default function EditRepositoryPage() {
                     </div>
                   </div>
 
-{/* DataPenggiat */}
-                    {openDataPenggiat && (
-                        <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
-                            <div className="
+                  {/* DataPenggiat */}
+                  {openDataPenggiat && (
+                    <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
+                      <div
+                        className="
       bg-white rounded-xl shadow-xl
       w-full max-w-3xl
       max-h-[90vh]
       flex flex-col
-    ">
-                                {/* HEADER */}
-                                <div className="flex items-center justify-between px-5 py-4 border-b shrink-0">
-                                    <h3 className="text-sm font-semibold">
-                                        Data Penggiat Kerjasama
-                                    </h3>
-                                    <button onClick={() => setOpenDataPenggiat(false)}>
-                                        <X className="w-4 h-4 text-muted-foreground" />
-                                    </button>
-                                </div>
-
-                                {/* BODY */}
-                                <div className="px-5 py-4 space-y-4 text-sm overflow-y-auto">
-                                    <SearchableSelect
-                                        label="Klasifikasi Mitra Kerjasama"
-                                        size="xs"
-                                        options={KLASIFIKASI_MITRA_OPTIONS}
-                                        value={dataPenggiat.klasifikasiMitra}
-                                        onChange={(v) =>
-                                            setDataPenggiat({ ...dataPenggiat, klasifikasiMitra: v })
-                                        }
-                                    />
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <ModalInput
-                                            label="Nama Mitra"
-                                            placeholder="nama mitra"
-                                            value={dataPenggiat.namaMitra}
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, namaMitra: v })
-                                            }
-                                        />
-
-                                        <SearchableSelect
-                                            label="Bidang Usaha"
-                                            size="xs"
-                                            options={BIDANG_USAHA_OPTIONS}
-                                            value={dataPenggiat.bidangUsaha}
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, bidangUsaha: v })
-                                            }
-                                        />
-
-                                        <SearchableSelect
-                                            label="Negara"
-                                            size="xs"
-                                            value={dataPenggiat.negara}
-                                            options={NEGARA_OPTIONS}
-                                            onChange={(v) =>
-                                                setDataPenggiat({
-                                                    ...dataPenggiat,
-                                                    negara: v
-                                                })
-                                            }
-                                        />
-
-                                        <ModalInput
-                                            label="Provinsi"
-                                            value={dataPenggiat.provinsi}
-                                            placeholder="Provinsi"
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, provinsi: v })
-                                            }
-                                        />
-                                    </div>
-
-                                    <ModalInput
-                                        label="Alamat"
-                                        placeholder="alamat lengkap"
-                                        value={dataPenggiat.alamat}
-                                        onChange={(v) =>
-                                            setDataPenggiat({ ...dataPenggiat, alamat: v })
-                                        }
-                                    />
-
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <ModalInput
-                                            label="NPWP"
-                                            placeholder="npwp"
-                                            value={dataPenggiat.npwp}
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, npwp: v })
-                                            }
-                                        />
-
-                                        <ModalInput
-                                            label="No. Telp"
-                                            placeholder="nomor telepon"
-                                            value={dataPenggiat.noTelp}
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, noTelp: v })
-                                            }
-                                        />
-
-                                        <ModalInput
-                                            label="No. Fax"
-                                            placeholder="nomor fax"
-                                            value={dataPenggiat.noFax}
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, noFax: v })
-                                            }
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <ModalInput
-                                            label="Email"
-                                            placeholder="email"
-                                            value={dataPenggiat.email}
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, email: v })
-                                            }
-                                        />
-
-                                        <ModalInput
-                                            label="URL Website"
-                                            placeholder="https://"
-                                            value={dataPenggiat.website}
-                                            onChange={(v) =>
-                                                setDataPenggiat({ ...dataPenggiat, website: v })
-                                            }
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* FOOTER */}
-                                <div className="flex justify-end gap-2 px-5 py-4 border-t shrink-0">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setOpenDataPenggiat(false)}
-                                    >
-                                        Close
-                                    </Button>
-                                    <Button size="sm">
-                                        Save
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-            {/* Bentuk Kegiatan */}
-            {openBentukKegiatan && (
-                <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
-                    <div className="
-      bg-white rounded-xl shadow-xl
-      w-full max-w-3xl
-      max-h-[90vh]
-      flex flex-col
-    ">
+    "
+                      >
                         {/* HEADER */}
                         <div className="flex items-center justify-between px-5 py-4 border-b shrink-0">
-                            <h3 className="text-sm font-semibold">
-                                Bentuk Kegiatan
-                            </h3>
-                            <button onClick={() => setOpenBentukKegiatan(false)}>
-                                <X className="w-4 h-4 text-muted-foreground" />
-                            </button>
+                          <h3 className="text-sm font-semibold">
+                            Data Penggiat Kerjasama
+                          </h3>
+                          <button onClick={() => setOpenDataPenggiat(false)}>
+                            <X className="w-4 h-4 text-muted-foreground" />
+                          </button>
                         </div>
 
                         {/* BODY */}
                         <div className="px-5 py-4 space-y-4 text-sm overflow-y-auto">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <SearchableSelect
-                                    label="Bentuk Kegiatan"
-                                    size="xs"
-                                    value={bentukKegiatan.bentuk}
-                                    options={BENTUK_KEGIATAN_OPTIONS}
-                                    onChange={(v) =>
-                                        setBentukKegiatan({ ...bentukKegiatan, bentuk: v })
-                                    }
-                                />
+                          <SearchableSelect
+                            label="Klasifikasi Mitra Kerjasama"
+                            size="xs"
+                            options={KLASIFIKASI_MITRA_OPTIONS}
+                            value={dataPenggiat.klasifikasiMitra}
+                            onChange={(v) =>
+                              setDataPenggiat({
+                                ...dataPenggiat,
+                                klasifikasiMitra: v,
+                              })
+                            }
+                          />
 
-                                <ModalInput
-                                    label="Penerimaan Anggaran"
-                                    placeholder="Rp..."
-                                    value={bentukKegiatan.penerimaan}
-                                    onChange={(v) =>
-                                        setBentukKegiatan({ ...bentukKegiatan, penerimaan: v })
-                                    }
-                                />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <ModalInput
+                              label="Nama Mitra"
+                              placeholder="nama mitra"
+                              value={dataPenggiat.namaMitra}
+                              onChange={(v) =>
+                                setDataPenggiat({
+                                  ...dataPenggiat,
+                                  namaMitra: v,
+                                })
+                              }
+                            />
 
-                                <ModalInput
-                                    label="Volume Kegiatan"
-                                    placeholder="volume"
-                                    value={bentukKegiatan.volume}
-                                    onChange={(v) =>
-                                        setBentukKegiatan({ ...bentukKegiatan, volume: v })
-                                    }
-                                />
+                            <SearchableSelect
+                              label="Bidang Usaha"
+                              size="xs"
+                              options={BIDANG_USAHA_OPTIONS}
+                              value={dataPenggiat.bidangUsaha}
+                              onChange={(v) =>
+                                setDataPenggiat({
+                                  ...dataPenggiat,
+                                  bidangUsaha: v,
+                                })
+                              }
+                            />
 
-                                <ModalInput
-                                    label="Satuan"
-                                    placeholder="satuan kegiatan"
-                                    value={bentukKegiatan.satuan}
-                                    onChange={(v) =>
-                                        setBentukKegiatan({ ...bentukKegiatan, satuan: v })
-                                    }
-                                />
+                            <SearchableSelect
+                              label="Negara"
+                              size="xs"
+                              value={dataPenggiat.negara}
+                              options={NEGARA_OPTIONS}
+                              onChange={(v) =>
+                                setDataPenggiat({
+                                  ...dataPenggiat,
+                                  negara: v,
+                                })
+                              }
+                            />
 
-                                <SearchableSelect
-                                    label="Sasaran"
-                                    size="xs"
-                                    value={bentukKegiatan.sasaran}
-                                    options={SASARAN_OPTIONS}
-                                    onChange={(v) =>
-                                        setBentukKegiatan({ ...bentukKegiatan, sasaran: v })
-                                    }
-                                />
+                            <ModalInput
+                              label="Provinsi"
+                              value={dataPenggiat.provinsi}
+                              placeholder="Provinsi"
+                              onChange={(v) =>
+                                setDataPenggiat({
+                                  ...dataPenggiat,
+                                  provinsi: v,
+                                })
+                              }
+                            />
+                          </div>
 
-                                <SearchableSelect
-                                    label="Indikator"
-                                    size="xs"
-                                    required={false}
-                                    value={bentukKegiatan.indikator}
-                                    options={INDIKATOR_OPTIONS}
-                                    onChange={(v) =>
-                                        setBentukKegiatan({ ...bentukKegiatan, indikator: v })
-                                    }
-                                />
-                            </div>
+                          <ModalInput
+                            label="Alamat"
+                            placeholder="alamat lengkap"
+                            value={dataPenggiat.alamat}
+                            onChange={(v) =>
+                              setDataPenggiat({ ...dataPenggiat, alamat: v })
+                            }
+                          />
 
-                            <div>
-                                <label className="text-xs font-medium">Keterangan</label>
-                                <textarea
-                                    placeholder="keterangan"
-                                    value={bentukKegiatan.keterangan}
-                                    onChange={(e) =>
-                                        setBentukKegiatan({
-                                            ...bentukKegiatan,
-                                            keterangan: e.target.value,
-                                        })
-                                    }
-                                    className="w-full border rounded-md px-3 py-2 text-sm min-h-[90px]
-            focus:outline-none focus:ring-2 focus:ring-primary/40"
-                                />
-                            </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <ModalInput
+                              label="NPWP"
+                              placeholder="npwp"
+                              value={dataPenggiat.npwp}
+                              onChange={(v) =>
+                                setDataPenggiat({ ...dataPenggiat, npwp: v })
+                              }
+                            />
+
+                            <ModalInput
+                              label="No. Telp"
+                              placeholder="nomor telepon"
+                              value={dataPenggiat.noTelp}
+                              onChange={(v) =>
+                                setDataPenggiat({ ...dataPenggiat, noTelp: v })
+                              }
+                            />
+
+                            <ModalInput
+                              label="No. Fax"
+                              placeholder="nomor fax"
+                              value={dataPenggiat.noFax}
+                              onChange={(v) =>
+                                setDataPenggiat({ ...dataPenggiat, noFax: v })
+                              }
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <ModalInput
+                              label="Email"
+                              placeholder="email"
+                              value={dataPenggiat.email}
+                              onChange={(v) =>
+                                setDataPenggiat({ ...dataPenggiat, email: v })
+                              }
+                            />
+
+                            <ModalInput
+                              label="URL Website"
+                              placeholder="https://"
+                              value={dataPenggiat.website}
+                              onChange={(v) =>
+                                setDataPenggiat({ ...dataPenggiat, website: v })
+                              }
+                            />
+                          </div>
                         </div>
 
                         {/* FOOTER */}
                         <div className="flex justify-end gap-2 px-5 py-4 border-t shrink-0">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setOpenBentukKegiatan(false)}
-                            >
-                                Close
-                            </Button>
-                            <Button size="sm">
-                                Save
-                            </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setOpenDataPenggiat(false)}
+                          >
+                            Close
+                          </Button>
+                          <Button size="sm">Save</Button>
                         </div>
+                      </div>
                     </div>
-                </div>
-            )}
+                  )}
+                  {/* Bentuk Kegiatan */}
+                  {openBentukKegiatan && (
+                    <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
+                      <div
+                        className="
+      bg-white rounded-xl shadow-xl
+      w-full max-w-3xl
+      max-h-[90vh]
+      flex flex-col
+    "
+                      >
+                        {/* HEADER */}
+                        <div className="flex items-center justify-between px-5 py-4 border-b shrink-0">
+                          <h3 className="text-sm font-semibold">
+                            Bentuk Kegiatan
+                          </h3>
+                          <button onClick={() => setOpenBentukKegiatan(false)}>
+                            <X className="w-4 h-4 text-muted-foreground" />
+                          </button>
+                        </div>
 
-  {openPenggiat && editingPenggiat && (
-  <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
-    <div className="bg-white rounded-xl w-full max-w-xl">
-      <div className="flex justify-between items-center px-5 py-4 border-b">
-        <h3 className="text-sm font-semibold">Penggiat Kerjasama</h3>
-        <button onClick={() => setOpenPenggiat(false)}>
-          <X className="w-4 h-4" />
-        </button>
-      </div>
+                        {/* BODY */}
+                        <div className="px-5 py-4 space-y-4 text-sm overflow-y-auto">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <SearchableSelect
+                              label="Bentuk Kegiatan"
+                              size="xs"
+                              value={bentukKegiatan.bentuk}
+                              options={BENTUK_KEGIATAN_OPTIONS}
+                              onChange={(v) =>
+                                setBentukKegiatan({
+                                  ...bentukKegiatan,
+                                  bentuk: v,
+                                })
+                              }
+                            />
 
-      <div className="p-5 space-y-4 text-sm">
-        <ModalInput
-          label="Pihak Ke"
-          placeholder="1, 2, 3, dst."
-          value={editingPenggiat.pihakKe}
-          onChange={(v:any)=>setEditingPenggiat({...editingPenggiat,pihakKe:v})}
-        />
-        <SearchableSelect
-          label="Nama Instansi"
-           size="xs"
-          options={namaInstansiOptions}
-          value={editingPenggiat.instansi}
-          onChange={(v:any)=>setEditingPenggiat({...editingPenggiat,instansi:v})}
-        />
-        <ModalInput
-          label="Nama Penandatangan"
-          placeholder="nama pejabat"
-          value={editingPenggiat.namaPenandatangan}
-          onChange={(v:any)=>setEditingPenggiat({...editingPenggiat,namaPenandatangan:v})}
-        />
-        <ModalInput
-          label="Jabatan Penandatangan"
-          placeholder="jabatan"
-          value={editingPenggiat.jabatanPenandatangan}
-          onChange={(v:any)=>setEditingPenggiat({...editingPenggiat,jabatanPenandatangan:v})}
-        />
-        <ModalInput
-          label="Email Penanggungjawab"
-          placeholder="nama penanggungjawab"
-          value={editingPenggiat.emailPenanggungJawab}
-          onChange={(v:any)=>setEditingPenggiat({...editingPenggiat,emailPenanggungJawab:v})}
-        />
+                            <ModalInput
+                              label="Penerimaan Anggaran"
+                              placeholder="Rp..."
+                              value={bentukKegiatan.penerimaan}
+                              onChange={(v) =>
+                                setBentukKegiatan({
+                                  ...bentukKegiatan,
+                                  penerimaan: v,
+                                })
+                              }
+                            />
 
-        <p className="text-xs text-muted-foreground leading-relaxed">
-                                        Note! Jika Nama Instansi penggiat tidak ada dalam database,
-                                        silahkan buat data baru di tombol{" "}
-                                        <b>"Penggiat Baru"</b>.
-                                    </p>
-      </div>
+                            <ModalInput
+                              label="Volume Kegiatan"
+                              placeholder="volume"
+                              value={bentukKegiatan.volume}
+                              onChange={(v) =>
+                                setBentukKegiatan({
+                                  ...bentukKegiatan,
+                                  volume: v,
+                                })
+                              }
+                            />
 
-      <div className="flex justify-end gap-2 px-5 py-4 border-t">
-        <Button variant="outline" onClick={() => setOpenPenggiat(false)}>
-          Close
-        </Button>
-      <Button
-  onClick={() => {
-    setPenggiatList((prev) =>
-      prev.map((x) =>
-        x.id === editingPenggiat.id ? editingPenggiat : x
-      )
-    );
+                            <ModalInput
+                              label="Satuan"
+                              placeholder="satuan kegiatan"
+                              value={bentukKegiatan.satuan}
+                              onChange={(v) =>
+                                setBentukKegiatan({
+                                  ...bentukKegiatan,
+                                  satuan: v,
+                                })
+                              }
+                            />
 
-    setOpenPenggiat(false);
-    setShowEditSuccess(true);
+                            <SearchableSelect
+                              label="Sasaran"
+                              size="xs"
+                              value={bentukKegiatan.sasaran}
+                              options={SASARAN_OPTIONS}
+                              onChange={(v) =>
+                                setBentukKegiatan({
+                                  ...bentukKegiatan,
+                                  sasaran: v,
+                                })
+                              }
+                            />
 
-    // auto close notif (opsional)
-    setTimeout(() => {
-      setShowEditSuccess(false);
-    }, 2000);
-  }}
->
-  Save
-</Button>
-      </div>
-    </div>
-  </div>
-)}
+                            <SearchableSelect
+                              label="Indikator"
+                              size="xs"
+                              required={false}
+                              value={bentukKegiatan.indikator}
+                              options={INDIKATOR_OPTIONS}
+                              onChange={(v) =>
+                                setBentukKegiatan({
+                                  ...bentukKegiatan,
+                                  indikator: v,
+                                })
+                              }
+                            />
+                          </div>
 
-{showEditSuccess && (
-  <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center">
-    <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center space-y-4 shadow-lg">
-      
-      <div className="flex justify-center">
-        <CheckCircle className="w-10 h-10 text-green-600" />
-      </div>
+                          <div>
+                            <label className="text-xs font-medium">
+                              Keterangan
+                            </label>
+                            <textarea
+                              placeholder="keterangan"
+                              value={bentukKegiatan.keterangan}
+                              onChange={(e) =>
+                                setBentukKegiatan({
+                                  ...bentukKegiatan,
+                                  keterangan: e.target.value,
+                                })
+                              }
+                              className="w-full border rounded-md px-3 py-2 text-sm min-h-[90px]
+            focus:outline-none focus:ring-2 focus:ring-primary/40"
+                            />
+                          </div>
+                        </div>
 
-      <p className="text-base font-medium text-green-600">
-        Berhasil
-      </p>
+                        {/* FOOTER */}
+                        <div className="flex justify-end gap-2 px-5 py-4 border-t shrink-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setOpenBentukKegiatan(false)}
+                          >
+                            Close
+                          </Button>
+                          <Button size="sm">Save</Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-      <p className="text-sm text-muted-foreground">
-        Data penggiat berhasil diperbarui
-      </p>
+                  {openPenggiat && editingPenggiat && (
+                    <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
+                      <div className="bg-white rounded-xl w-full max-w-xl">
+                        <div className="flex justify-between items-center px-5 py-4 border-b">
+                          <h3 className="text-sm font-semibold">
+                            Penggiat Kerjasama
+                          </h3>
+                          <button onClick={() => setOpenPenggiat(false)}>
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
 
-      <div className="flex justify-center">
-        <Button
-          size="sm"
-          onClick={() => setShowEditSuccess(false)}
-        >
-          OK
-        </Button>
-      </div>
+                        <div className="p-5 space-y-4 text-sm">
+                          <ModalInput
+                            label="Pihak Ke"
+                            placeholder="1, 2, 3, dst."
+                            value={editingPenggiat.pihakKe}
+                            onChange={(v: any) =>
+                              setEditingPenggiat({
+                                ...editingPenggiat,
+                                pihakKe: v,
+                              })
+                            }
+                          />
+                          <SearchableSelect
+                            label="Nama Instansi"
+                            size="xs"
+                            options={namaInstansiOptions}
+                            value={editingPenggiat.instansi}
+                            onChange={(v: any) =>
+                              setEditingPenggiat({
+                                ...editingPenggiat,
+                                instansi: v,
+                              })
+                            }
+                          />
+                          <ModalInput
+                            label="Nama Penandatangan"
+                            placeholder="nama pejabat"
+                            value={editingPenggiat.namaPenandatangan}
+                            onChange={(v: any) =>
+                              setEditingPenggiat({
+                                ...editingPenggiat,
+                                namaPenandatangan: v,
+                              })
+                            }
+                          />
+                          <ModalInput
+                            label="Jabatan Penandatangan"
+                            placeholder="jabatan"
+                            value={editingPenggiat.jabatanPenandatangan}
+                            onChange={(v: any) =>
+                              setEditingPenggiat({
+                                ...editingPenggiat,
+                                jabatanPenandatangan: v,
+                              })
+                            }
+                          />
+                          <ModalInput
+                            label="Email Penanggungjawab"
+                            placeholder="nama penanggungjawab"
+                            value={editingPenggiat.emailPenanggungJawab}
+                            onChange={(v: any) =>
+                              setEditingPenggiat({
+                                ...editingPenggiat,
+                                emailPenanggungJawab: v,
+                              })
+                            }
+                          />
 
-    </div>
-  </div>
-)}
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            Note! Jika Nama Instansi penggiat tidak ada dalam
+                            database, silahkan buat data baru di tombol{" "}
+                            <b>"Penggiat Baru"</b>.
+                          </p>
+                        </div>
 
-{showDeleteConfirm && (
-  <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center">
-    <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center space-y-4 shadow-lg">
+                        <div className="flex justify-end gap-2 px-5 py-4 border-t">
+                          <Button
+                            variant="outline"
+                            onClick={() => setOpenPenggiat(false)}
+                          >
+                            Close
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setPenggiatList((prev) =>
+                                prev.map((x) =>
+                                  x.id === editingPenggiat.id
+                                    ? editingPenggiat
+                                    : x,
+                                ),
+                              );
 
-      <div className="flex justify-center">
-        <Trash2 className="w-10 h-10 text-red-600" />
-      </div>
+                              setOpenPenggiat(false);
+                              setShowEditSuccess(true);
 
-      <p className="text-base font-medium text-red-600">
-        Hapus Data
-      </p>
+                              // auto close notif (opsional)
+                              setTimeout(() => {
+                                setShowEditSuccess(false);
+                              }, 2000);
+                            }}
+                          >
+                            Save
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-      <p className="text-sm text-muted-foreground">
-        Apakah kamu yakin ingin menghapus penggiat
-        <b className="mx-1">{showDeleteConfirm.instansi}</b>?
-      </p>
+                  {showEditSuccess && (
+                    <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center">
+                      <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center space-y-4 shadow-lg">
+                        <div className="flex justify-center">
+                          <CheckCircle className="w-10 h-10 text-green-600" />
+                        </div>
 
-      <div className="flex justify-center gap-2">
-        <Button
-          variant="outline"
-          onClick={() => setShowDeleteConfirm(null)}
-        >
-          Batal
-        </Button>
-        <Button
-          variant="destructive"
-          onClick={() => {
-            setPenggiatList((prev) =>
-              prev.filter((x) => x.id !== showDeleteConfirm.id)
-            );
-            setShowDeleteConfirm(null);
-          }}
-        >
-          Hapus
-        </Button>
-      </div>
+                        <p className="text-base font-medium text-green-600">
+                          Berhasil
+                        </p>
 
-    </div>
-  </div>
-)}
+                        <p className="text-sm text-muted-foreground">
+                          Data penggiat berhasil diperbarui
+                        </p>
+
+                        <div className="flex justify-center">
+                          <Button
+                            size="sm"
+                            onClick={() => setShowEditSuccess(false)}
+                          >
+                            OK
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {showDeleteConfirm && (
+                    <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center">
+                      <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center space-y-4 shadow-lg">
+                        <div className="flex justify-center">
+                          <Trash2 className="w-10 h-10 text-red-600" />
+                        </div>
+
+                        <p className="text-base font-medium text-red-600">
+                          Hapus Data
+                        </p>
+
+                        <p className="text-sm text-muted-foreground">
+                          Apakah kamu yakin ingin menghapus penggiat
+                          <b className="mx-1">{showDeleteConfirm.instansi}</b>?
+                        </p>
+
+                        <div className="flex justify-center gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setShowDeleteConfirm(null)}
+                          >
+                            Batal
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            onClick={() => {
+                              setPenggiatList((prev) =>
+                                prev.filter(
+                                  (x) => x.id !== showDeleteConfirm.id,
+                                ),
+                              );
+                              setShowDeleteConfirm(null);
+                            }}
+                          >
+                            Hapus
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="space-y-3">
                     {penggiatList.map((p) => (
@@ -1201,8 +1265,8 @@ export default function EditRepositoryPage() {
                           onClick={() =>
                             setPenggiatList((prev) =>
                               prev.map((x) =>
-                                x.id === p.id ? { ...x, open: !x.open } : x
-                              )
+                                x.id === p.id ? { ...x, open: !x.open } : x,
+                              ),
                             )
                           }
                         >
@@ -1239,25 +1303,24 @@ export default function EditRepositoryPage() {
                             </div>
 
                             <div className="flex gap-2">
-                            <Button
-  size="sm"
-  variant="outline"
-  className="flex items-center gap-1"
-  onClick={() => {
-    setEditingPenggiat(p);
-    setOpenPenggiat(true);
-  }}
->
-  <Pencil className="w-4 h-4" />
-  Edit
-</Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="flex items-center gap-1"
+                                onClick={() => {
+                                  setEditingPenggiat(p);
+                                  setOpenPenggiat(true);
+                                }}
+                              >
+                                <Pencil className="w-4 h-4" />
+                                Edit
+                              </Button>
 
-
-<Button
-  size="sm"
-  variant="outline"
-  onClick={() => setShowDeleteConfirm(p)}
-  className="
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setShowDeleteConfirm(p)}
+                                className="
     flex items-center gap-1
     text-foreground
     border-border
@@ -1265,12 +1328,10 @@ export default function EditRepositoryPage() {
     hover:border-red-600
     hover:text-white
   "
->
-  <Trash2 className="w-4 h-4" />
-  Hapus
-</Button>
-
-
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Hapus
+                              </Button>
                             </div>
                           </div>
                         )}
@@ -1301,10 +1362,7 @@ export default function EditRepositoryPage() {
         </main>
       </div>
     </div>
-
-    
   );
-
 }
 
 /* ================= REUSABLE UI ================= */
@@ -1380,30 +1438,30 @@ function Select({
 }
 
 function ModalInput({
-    label,
-    placeholder,
-    value,
-    onChange,
+  label,
+  placeholder,
+  value,
+  onChange,
 }: {
-    label: string;
-    placeholder?: string;
-    value: string;
-    onChange: (v: string) => void;
+  label: string;
+  placeholder?: string;
+  value: string;
+  onChange: (v: string) => void;
 }) {
-    return (
-        <div className="space-y-1">
-            <label className="text-xs font-medium">
-                {label} <span className="text-red-500">*</span>
-            </label>
-            <input
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder}
-                className="w-full border rounded-md px-3 py-2 text-sm
+  return (
+    <div className="space-y-1">
+      <label className="text-xs font-medium">
+        {label} <span className="text-red-500">*</span>
+      </label>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full border rounded-md px-3 py-2 text-sm
         focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-        </div>
-    );
+      />
+    </div>
+  );
 }
 
 function FileInput({

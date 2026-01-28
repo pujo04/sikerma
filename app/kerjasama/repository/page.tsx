@@ -7,370 +7,358 @@ import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-    RefreshCcw,
-    Plus,
-    ArrowLeft,
-    Download,
-    X,
-    List,
-    Link as LinkIcon,
-    FileText,
-    FileCheck,
-    FileSpreadsheet,
+  RefreshCcw,
+  Plus,
+  ArrowLeft,
+  Download,
+  X,
+  List,
+  Link as LinkIcon,
+  FileText,
+  FileCheck,
+  FileSpreadsheet,
 } from "lucide-react";
 
 /* ================= TYPES ================= */
 
 type RepositoryDoc = {
-    id: number;
-    jenis: "MoU" | "MoA" | "IA";
-    nomor: string;
-    judul: string;
-    expired: string;
-    status: "Aktif" | "Tidak Aktif";
-    periode: string;
-    deskripsi: string;
-    unitPelaksana: string;
-    penanggungJawab: string;
-    sumberDana: string;
-    anggaran: string;
-    bentukKegiatan: string;
-    skala: string;
-    paraPenggiat: string; // ⬅️ TAMBAHAN
+  id: number;
+  jenis: "MoU" | "MoA" | "IA";
+  nomor: string;
+  judul: string;
+  expired: string;
+  status: "Aktif" | "Tidak Aktif";
+  periode: string;
+  deskripsi: string;
+  unitPelaksana: string;
+  penanggungJawab: string;
+  sumberDana: string;
+  anggaran: string;
+  bentukKegiatan: string;
+  skala: string;
+  paraPenggiat: string; // ⬅️ TAMBAHAN
 };
-
 
 /* ================= DUMMY DATA ================= */
 
 const DUMMY_DATA: RepositoryDoc[] = Array.from({ length: 120 }, (_, i) => ({
-    id: i + 1,
-    jenis: i % 3 === 0 ? "MoU" : i % 3 === 1 ? "MoA" : "IA",
-    nomor: `UN26/${1000 + i}/KS/202${i % 4}`,
-    judul: `Kerja Sama Akademik Universitas Lampung ${i + 1}`,
-    expired: `18/12/203${i % 5}`,
-    status: "Aktif",
-    periode: "18-12-2025 s.d 18-12-2030",
-    deskripsi:
-        "Nota kesepahaman terkait pengembangan pendidikan, penelitian, dan pengabdian kepada masyarakat.",
-    unitPelaksana: "Universitas Lampung",
-    penanggungJawab: "Biro Perencanaan dan Hubungan Masyarakat",
-    sumberDana: "Lainnya",
-    anggaran: "0,00",
-    bentukKegiatan: "Pengabdian Kepada Masyarakat",
-    skala: "Nasional",
-    paraPenggiat:
-        "Pihak Ke-1 | Badan Strategi Kebijakan dan Pendidikan Pelatihan Hukum dan Peradilan Mahkamah Agung Republik Indonesia | Dr. H. Syamsul Arief, S.H., M.H.\n" +
-        "Pihak Ke-2 | Universitas Lampung | Lusmeilia Afriani",
+  id: i + 1,
+  jenis: i % 3 === 0 ? "MoU" : i % 3 === 1 ? "MoA" : "IA",
+  nomor: `UN26/${1000 + i}/KS/202${i % 4}`,
+  judul: `Kerja Sama Akademik Universitas Lampung ${i + 1}`,
+  expired: `18/12/203${i % 5}`,
+  status: "Aktif",
+  periode: "18-12-2025 s.d 18-12-2030",
+  deskripsi:
+    "Nota kesepahaman terkait pengembangan pendidikan, penelitian, dan pengabdian kepada masyarakat.",
+  unitPelaksana: "Universitas Lampung",
+  penanggungJawab: "Biro Perencanaan dan Hubungan Masyarakat",
+  sumberDana: "Lainnya",
+  anggaran: "0,00",
+  bentukKegiatan: "Pengabdian Kepada Masyarakat",
+  skala: "Nasional",
+  paraPenggiat:
+    "Pihak Ke-1 | Badan Strategi Kebijakan dan Pendidikan Pelatihan Hukum dan Peradilan Mahkamah Agung Republik Indonesia | Dr. H. Syamsul Arief, S.H., M.H.\n" +
+    "Pihak Ke-2 | Universitas Lampung | Lusmeilia Afriani",
 }));
-
 
 /* ================= PAGE ================= */
 
 export default function RepositoryPage() {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
-    const [search, setSearch] = useState("");
-    const [limit, setLimit] = useState(10);
-    const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
 
-    const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
+  const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
+useEffect(() => {
+  document.title = "SIKERMA - Repository";
+}, []);
 
-    /* ================= FILTER ================= */
+  /* ================= FILTER ================= */
 
-    const filteredData = useMemo(() => {
-        return DUMMY_DATA.filter((item) =>
-            `${item.jenis} ${item.nomor} ${item.judul} ${item.status}`
-                .toLowerCase()
-                .includes(search.toLowerCase())
-        );
-    }, [search]);
-
-    const totalPages = Math.ceil(filteredData.length / limit);
-
-    const paginatedData = filteredData.slice(
-        (page - 1) * limit,
-        page * limit
+  const filteredData = useMemo(() => {
+    return DUMMY_DATA.filter((item) =>
+      `${item.jenis} ${item.nomor} ${item.judul} ${item.status}`
+        .toLowerCase()
+        .includes(search.toLowerCase()),
     );
+  }, [search]);
 
-    useEffect(() => {
-        setPage(1);
-    }, [search, limit]);
+  const totalPages = Math.ceil(filteredData.length / limit);
 
-    const getPageNumbers = () => {
-        if (totalPages <= 5) {
-            return Array.from({ length: totalPages }, (_, i) => i + 1);
-        }
-        return [1, 2, 3, "...", totalPages];
-    };
+  const paginatedData = filteredData.slice((page - 1) * limit, page * limit);
 
-    return (
-        <div className="min-h-screen bg-background">
-            {/* SIDEBAR */}
-            <Sidebar
-                open={sidebarOpen}
-                onOpenChange={setSidebarOpen}
-                onExpandChange={setSidebarExpanded}
-            />
+  useEffect(() => {
+    setPage(1);
+  }, [search, limit]);
 
-            {/* CONTENT */}
-            <div
-                className={cn(
-                    "relative transition-all duration-300",
-                    "ml-0",
-                    sidebarExpanded ? "md:ml-64" : "md:ml-[72px]"
-                )}
-            >
-                <div className="flex flex-col min-h-screen">
-                    <Header onMenuClick={() => setSidebarOpen(true)} />
+  const getPageNumbers = () => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    return [1, 2, 3, "...", totalPages];
+  };
 
-                    <main className="flex-1 p-4 md:p-6 lg:p-8">
-                        <div className="max-w-7xl mx-auto space-y-6">
-                            {/* TITLE */}
-                            <div className="flex items-center justify-between">
-                                <h1 className="text-xl md:text-2xl font-bold">
-                                    Repository Dokumen
-                                </h1>
+  return (
+    <div className="min-h-screen bg-background">
+      {/* SIDEBAR */}
+      <Sidebar
+        open={sidebarOpen}
+        onOpenChange={setSidebarOpen}
+        onExpandChange={setSidebarExpanded}
+      />
 
-                                <div className="flex gap-2">
-                                    <Button variant="outline" size="sm">
-                                        <RefreshCcw className="w-4 h-4 mr-1" />
-                                        Refresh
-                                    </Button>
-                                    <Link href="/kerjasama/repository/create">
-                                        <Button variant="outline" size="sm">
-                                            <Plus className="w-4 h-4 mr-1" />
-                                            Add
-                                        </Button>
-                                    </Link>
+      {/* CONTENT */}
+      <div
+        className={cn(
+          "relative transition-all duration-300",
+          "ml-0",
+          sidebarExpanded ? "md:ml-64" : "md:ml-[72px]",
+        )}
+      >
+        <div className="flex flex-col min-h-screen">
+          <Header onMenuClick={() => setSidebarOpen(true)} />
 
-                                    <Button variant="destructive" size="sm">
-                                        <ArrowLeft className="w-4 h-4 mr-1" />
-                                        Back
-                                    </Button>
-                                </div>
-                            </div>
+          <main className="flex-1 p-4 md:p-6 lg:p-8">
+            <div className="max-w-7xl mx-auto space-y-6">
+              {/* TITLE */}
+              <div className="flex items-center justify-between">
+                <h1 className="text-xl md:text-2xl font-bold">
+                  Repository Dokumen
+                </h1>
 
-                            {/* CARD */}
-                            <div className="rounded-lg border bg-card">
-                                {/* CONTROLS */}
-                                <div className="p-4 flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2">
-                                        <span>Show</span>
-                                        <select
-                                            value={limit}
-                                            onChange={(e) => setLimit(Number(e.target.value))}
-                                            className="border rounded px-2 py-1"
-                                        >
-                                            <option value={10}>10</option>
-                                            <option value={25}>25</option>
-                                            <option value={50}>50</option>
-                                        </select>
-                                        <span>entries</span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <span>Search:</span>
-                                        <input
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            className="border rounded px-2 py-1"
-                                            placeholder="Cari dokumen..."
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* TABLE */}
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm border-t">
-                                        <thead className="bg-muted/40">
-                                            <tr>
-                                                <th className="px-3 py-2">No</th>
-                                                <th className="px-3 py-2">Jenis</th>
-                                                <th className="px-3 py-2">Nomor Dokumen</th>
-                                                <th className="px-3 py-2">Judul Kegiatan</th>
-                                                <th className="px-3 py-2">Expired Date</th>
-                                                <th className="px-3 py-2">Status</th>
-                                                <th className="px-3 py-2">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {paginatedData.map((item, index) => (
-                                                <tr key={item.id} className="border-b">
-                                                    <td className="px-3 py-2">
-                                                        {(page - 1) * limit + index + 1}
-                                                    </td>
-                                                    <td className="px-3 py-2">{item.jenis}</td>
-                                                    <td className="px-3 py-2">{item.nomor}</td>
-                                                    <td className="px-3 py-2">{item.judul}</td>
-                                                    <td className="px-3 py-2">{item.expired}</td>
-                                                    <td className="px-3 py-2">
-                                                        <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs">
-                                                            {item.status}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-3 py-2 flex gap-1">
-                                                        {/* DETAIL */}
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            onClick={() => setSelectedDoc(item)}
-                                                        >
-                                                            <List className="w-4 h-4" />
-                                                        </Button>
-
-                                                        {/* DOWNLOAD */}
-                                                        <Button size="sm" variant="outline">
-                                                            <Download className="w-4 h-4" />
-                                                        </Button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                {/* FOOTER */}
-                                <div className="p-4 flex items-center justify-between text-sm">
-                                    <span>
-                                        Showing {(page - 1) * limit + 1} to{" "}
-                                        {Math.min(page * limit, filteredData.length)} of{" "}
-                                        {filteredData.length} entries
-                                    </span>
-
-                                    <div className="flex items-center gap-1">
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            disabled={page === 1}
-                                            onClick={() => setPage((p) => p - 1)}
-                                        >
-                                            Previous
-                                        </Button>
-
-                                        {getPageNumbers().map((p, i) =>
-                                            p === "..." ? (
-                                                <span key={i} className="px-2">
-                                                    ...
-                                                </span>
-                                            ) : (
-                                                <Button
-                                                    key={i}
-                                                    size="sm"
-                                                    variant={p === page ? "default" : "outline"}
-                                                    onClick={() => setPage(p)}
-                                                >
-                                                    {p}
-                                                </Button>
-                                            )
-                                        )}
-
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            disabled={page === totalPages}
-                                            onClick={() => setPage((p) => p + 1)}
-                                        >
-                                            Next
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
+                <div className="flex gap-2">
+                  <Link href="/kerjasama/repository/create">
+                    <Button variant="outline" size="sm">
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add
+                    </Button>
+                  </Link>
                 </div>
-            </div>
+              </div>
 
-            {/* ================= MODAL DETAIL ================= */}
-            {selectedDoc && (
-                <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-                    <div
-                        className="
+              {/* CARD */}
+              <div className="rounded-lg border bg-card">
+                {/* CONTROLS */}
+                <div className="p-4 flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <span>Show</span>
+                    <select
+                      value={limit}
+                      onChange={(e) => setLimit(Number(e.target.value))}
+                      className="border rounded px-2 py-1"
+                    >
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                    <span>entries</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span>Search:</span>
+                    <input
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="border rounded px-2 py-1"
+                      placeholder="Cari dokumen..."
+                    />
+                  </div>
+                </div>
+
+                {/* TABLE */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm border-t">
+                    <thead className="bg-muted/40">
+                      <tr>
+                        <th className="px-3 py-2">No</th>
+                        <th className="px-3 py-2">Jenis</th>
+                        <th className="px-3 py-2">Nomor Dokumen</th>
+                        <th className="px-3 py-2">Judul Kegiatan</th>
+                        <th className="px-3 py-2">Expired Date</th>
+                        <th className="px-3 py-2">Status</th>
+                        <th className="px-3 py-2">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedData.map((item, index) => (
+                        <tr key={item.id} className="border-b">
+                          <td className="px-3 py-2">
+                            {(page - 1) * limit + index + 1}
+                          </td>
+                          <td className="px-3 py-2">{item.jenis}</td>
+                          <td className="px-3 py-2">{item.nomor}</td>
+                          <td className="px-3 py-2">{item.judul}</td>
+                          <td className="px-3 py-2">{item.expired}</td>
+                          <td className="px-3 py-2">
+                            <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs">
+                              {item.status}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2 flex gap-1">
+                            {/* DETAIL */}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setSelectedDoc(item)}
+                            >
+                              <List className="w-4 h-4" />
+                            </Button>
+
+                            {/* DOWNLOAD */}
+                            <Button size="sm" variant="outline">
+                              <Download className="w-4 h-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* FOOTER */}
+                <div className="p-4 flex items-center justify-between text-sm">
+                  <span>
+                    Showing {(page - 1) * limit + 1} to{" "}
+                    {Math.min(page * limit, filteredData.length)} of{" "}
+                    {filteredData.length} entries
+                  </span>
+
+                  <div className="flex items-center gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={page === 1}
+                      onClick={() => setPage((p) => p - 1)}
+                    >
+                      Previous
+                    </Button>
+
+                    {getPageNumbers().map((p, i) =>
+                      p === "..." ? (
+                        <span key={i} className="px-2">
+                          ...
+                        </span>
+                      ) : (
+                        <Button
+                          key={i}
+                          size="sm"
+                          variant={p === page ? "default" : "outline"}
+                          onClick={() => setPage(p)}
+                        >
+                          {p}
+                        </Button>
+                      ),
+                    )}
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={page === totalPages}
+                      onClick={() => setPage((p) => p + 1)}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      {/* ================= MODAL DETAIL ================= */}
+      {selectedDoc && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div
+            className="
         bg-white rounded-xl shadow-xl
         w-full max-w-2xl
         max-h-[80vh]
         flex flex-col
       "
-                    >
-                        {/* HEADER (fixed) */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
-                            <h2 className="text-base font-semibold text-foreground">
-                                Detail Dokumen Kerjasama
-                            </h2>
-                            <button
-                                onClick={() => setSelectedDoc(null)}
-                                className="text-muted-foreground hover:text-foreground"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
+          >
+            {/* HEADER (fixed) */}
+            <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
+              <h2 className="text-base font-semibold text-foreground">
+                Detail Dokumen Kerjasama
+              </h2>
+              <button
+                onClick={() => setSelectedDoc(null)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-                        {/* BODY (scrollable) */}
-                        <div className="px-6 py-4 text-sm space-y-3 overflow-y-auto">
-                            {[
-                                ["Jenis Dokumen", selectedDoc.jenis],
-                                ["Nomor Dokumen", selectedDoc.nomor],
-                                ["Judul Kerjasama", selectedDoc.judul],
-                                ["Status Dokumen", selectedDoc.status],
-                                ["Periode", selectedDoc.periode],
-                                ["Deskripsi", selectedDoc.deskripsi],
-                                ["Unit Pelaksana", selectedDoc.unitPelaksana],
-                                ["Penanggung Jawab", selectedDoc.penanggungJawab],
-                                ["Sumber Dana", selectedDoc.sumberDana],
-                                ["Anggaran", selectedDoc.anggaran],
-                                ["Bentuk Kegiatan", selectedDoc.bentukKegiatan],
-                                ["Para Penggiat", selectedDoc.paraPenggiat], // ⬅️ TAMBAHAN
-                                ["Skala", selectedDoc.skala],
-                            ]
-                                .map(([label, value]) => (
-                                    <div
-                                        key={label}
-                                        className="grid grid-cols-[170px_1fr] gap-4 py-2 border-b border-muted"
-                                    >
-                                        <span className="text-muted-foreground">{label}</span>
-                                        <span className="text-foreground leading-relaxed whitespace-pre-line">
-                                            {value}
-                                        </span>
-                                    </div>
-                                ))}
-
-                            {/* DOWNLOAD */}
-                            <div className="grid grid-cols-[170px_1fr] gap-4 py-4 border-b border-muted">
-                                <span className="text-muted-foreground">Download File</span>
-                                <div className="flex flex-wrap gap-2">
-                                    <Button size="sm" variant="outline">
-                                        <Download className="w-4 h-4 mr-1" />
-                                        File Dokumen
-                                    </Button>
-                                    <Button size="sm" variant="outline">
-                                        <LinkIcon className="w-4 h-4 mr-1" />
-                                        Link Dokumen
-                                    </Button>
-                                    <Button size="sm" variant="outline">
-                                        <FileCheck className="w-4 h-4 mr-1" />
-                                        Kontrak
-                                    </Button>
-                                    <Button size="sm" variant="outline">
-                                        <FileText className="w-4 h-4 mr-1" />
-                                        KAK
-                                    </Button>
-                                    <Button size="sm" variant="outline">
-                                        <FileSpreadsheet className="w-4 h-4 mr-1" />
-                                        RAB
-                                    </Button>
-                                </div>
-                            </div>
-
-                            {/* ACTION */}
-                            <div className="flex justify-center pt-6">
-                                <Button variant="secondary" className="px-6">
-                                    Klaim Dokumen Ini?
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
+            {/* BODY (scrollable) */}
+            <div className="px-6 py-4 text-sm space-y-3 overflow-y-auto">
+              {[
+                ["Jenis Dokumen", selectedDoc.jenis],
+                ["Nomor Dokumen", selectedDoc.nomor],
+                ["Judul Kerjasama", selectedDoc.judul],
+                ["Status Dokumen", selectedDoc.status],
+                ["Periode", selectedDoc.periode],
+                ["Deskripsi", selectedDoc.deskripsi],
+                ["Unit Pelaksana", selectedDoc.unitPelaksana],
+                ["Penanggung Jawab", selectedDoc.penanggungJawab],
+                ["Sumber Dana", selectedDoc.sumberDana],
+                ["Anggaran", selectedDoc.anggaran],
+                ["Bentuk Kegiatan", selectedDoc.bentukKegiatan],
+                ["Para Penggiat", selectedDoc.paraPenggiat], // ⬅️ TAMBAHAN
+                ["Skala", selectedDoc.skala],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="grid grid-cols-[170px_1fr] gap-4 py-2 border-b border-muted"
+                >
+                  <span className="text-muted-foreground">{label}</span>
+                  <span className="text-foreground leading-relaxed whitespace-pre-line">
+                    {value}
+                  </span>
                 </div>
-            )}
+              ))}
+
+              {/* DOWNLOAD */}
+              <div className="grid grid-cols-[170px_1fr] gap-4 py-4 border-b border-muted">
+                <span className="text-muted-foreground">Download File</span>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline">
+                    <Download className="w-4 h-4 mr-1" />
+                    File Dokumen
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <LinkIcon className="w-4 h-4 mr-1" />
+                    Link Dokumen
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <FileCheck className="w-4 h-4 mr-1" />
+                    Kontrak
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <FileText className="w-4 h-4 mr-1" />
+                    KAK
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <FileSpreadsheet className="w-4 h-4 mr-1" />
+                    RAB
+                  </Button>
+                </div>
+              </div>
+
+              {/* ACTION */}
+              <div className="flex justify-center pt-6">
+                <Button variant="secondary" className="px-6">
+                  Klaim Dokumen Ini?
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 }

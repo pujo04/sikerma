@@ -1,8 +1,8 @@
 export type MenuItem = {
-  label: string
-  path: string
-  children?: MenuItem[]
-}
+  label: string;
+  path: string;
+  children?: MenuItem[];
+};
 
 export const menuItems: MenuItem[] = [
   {
@@ -35,4 +35,4 @@ export const menuItems: MenuItem[] = [
     label: "Laporan",
     path: "/dashboard/laporan",
   },
-]
+];

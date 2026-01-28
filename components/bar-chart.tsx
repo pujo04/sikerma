@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useMemo, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Bar,
   BarChart as RechartsBarChart,
@@ -11,24 +11,24 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-} from "recharts"
+} from "recharts";
 
 // ================= TYPES =================
-type DocKey = "MoU" | "MoA" | "IA"
+type DocKey = "MoU" | "MoA" | "IA";
 
 type YearData = {
-  year: string
-  MoU: number
-  MoA: number
-  IA: number
-}
+  year: string;
+  MoU: number;
+  MoA: number;
+  IA: number;
+};
 
 // ================= COLORS =================
 const COLORS: Record<DocKey, string> = {
   MoU: "#22c55e",
   MoA: "#3b82f6",
   IA: "#facc15",
-}
+};
 
 // ================= MOCK REALTIME =================
 const fetchRealtimeData = (): Promise<YearData[]> =>
@@ -45,43 +45,42 @@ const fetchRealtimeData = (): Promise<YearData[]> =>
         { year: "2023", MoU: 0, MoA: 0, IA: 0 },
         { year: "2024", MoU: 0, MoA: 0, IA: 0 },
         { year: "2025", MoU: 0, MoA: 0, IA: 0 },
-      ])
-    }, 1200)
-  )
+      ]);
+    }, 1200),
+  );
 
 // ================= COMPONENT =================
 export function BarChart() {
-  const [activeKeys, setActiveKeys] = useState<DocKey[]>([])
-  const [data, setData] = useState<YearData[]>([])
-  const [loading, setLoading] = useState(true)
+  const [activeKeys, setActiveKeys] = useState<DocKey[]>([]);
+  const [data, setData] = useState<YearData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchRealtimeData().then((res) => {
-      setData(res)
-      setLoading(false)
-    })
-  }, [])
+      setData(res);
+      setLoading(false);
+    });
+  }, []);
 
   // ================= STATISTIK =================
   const totals = useMemo(() => {
-    const sum = (key: DocKey) =>
-      data.reduce((s, d) => s + d[key], 0)
+    const sum = (key: DocKey) => data.reduce((s, d) => s + d[key], 0);
 
     const visibleKeys =
-      activeKeys.length > 0 ? activeKeys : ["MoU", "MoA", "IA"]
+      activeKeys.length > 0 ? activeKeys : ["MoU", "MoA", "IA"];
 
-    const total = visibleKeys.reduce((s, k) => s + sum(k as DocKey), 0)
+    const total = visibleKeys.reduce((s, k) => s + sum(k as DocKey), 0);
 
     const percent = (v: number) =>
-      total === 0 ? "0%" : `${Math.round((v / total) * 100)}%`
+      total === 0 ? "0%" : `${Math.round((v / total) * 100)}%`;
 
     return {
       TOTAL: total,
       MoU: percent(sum("MoU")),
       MoA: percent(sum("MoA")),
       IA: percent(sum("IA")),
-    }
-  }, [data, activeKeys])
+    };
+  }, [data, activeKeys]);
 
   // ================= SKELETON =================
   if (loading) {
@@ -99,7 +98,7 @@ export function BarChart() {
           <div className="h-[300px] bg-muted rounded" />
         </CardContent>
       </Card>
-    )
+    );
   }
 
   // ================= UI =================
@@ -116,9 +115,7 @@ export function BarChart() {
         </div>
 
         <div className="flex items-end justify-between">
-          <div className="text-lg font-bold">
-            {totals.TOTAL} Dokumen
-          </div>
+          <div className="text-lg font-bold">{totals.TOTAL} Dokumen</div>
 
           <div className="flex gap-6 text-sm">
             {(Object.keys(COLORS) as DocKey[]).map((key) => (
@@ -165,7 +162,7 @@ export function BarChart() {
             <Tooltip
               cursor={{ fill: "rgba(0,0,0,0.05)" }}
               content={({ active, payload, label }) => {
-                if (!active || !payload?.length) return null
+                if (!active || !payload?.length) return null;
                 return (
                   <div className="rounded-lg border bg-background px-3 py-2 shadow-md text-xs font-sans space-y-1">
                     <p className="font-medium">{label}</p>
@@ -175,7 +172,7 @@ export function BarChart() {
                       </p>
                     ))}
                   </div>
-                )
+                );
               }}
             />
 
@@ -183,7 +180,7 @@ export function BarChart() {
             <Legend
               iconType="square"
               formatter={(value) => {
-                const active = activeKeys.includes(value as DocKey)
+                const active = activeKeys.includes(value as DocKey);
                 return (
                   <span
                     style={{
@@ -199,22 +196,22 @@ export function BarChart() {
                   >
                     {value}
                   </span>
-                )
+                );
               }}
               onClick={(e) => {
-                const key = e.dataKey as DocKey
+                const key = e.dataKey as DocKey;
                 setActiveKeys((prev) =>
                   prev.includes(key)
                     ? prev.filter((k) => k !== key)
-                    : [...prev, key]
-                )
+                    : [...prev, key],
+                );
               }}
             />
 
             {/* BAR */}
             {(Object.keys(COLORS) as DocKey[]).map((key) => {
               const visible =
-                activeKeys.length === 0 || activeKeys.includes(key)
+                activeKeys.length === 0 || activeKeys.includes(key);
 
               return (
                 <Bar
@@ -226,11 +223,11 @@ export function BarChart() {
                   animationDuration={600}
                   animationEasing="ease-out"
                 />
-              )
+              );
             })}
           </RechartsBarChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

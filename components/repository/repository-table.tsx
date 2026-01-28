@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Download, List, ChevronUp, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { Download, List, ChevronUp, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 // Sample data - replace with actual data from API
 const sampleDocuments = [
@@ -19,7 +19,8 @@ const sampleDocuments = [
     periode: "14-11-2025 s.d. 14-11-2026",
     deskripsi: "Kuliah Umum yang diisi oleh Pihak Kesatu",
     dasarDokumen: "Tidak ada",
-    unitPelaksana: "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
+    unitPelaksana:
+      "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
     penanggungJawab: "Dr. Albet Maydiantoro, M.Pd.",
     unitPenanggungJawab: "Fakultas Keguruan dan Ilmu Pendidikan",
     sumberDana: "Lainnya",
@@ -40,7 +41,8 @@ const sampleDocuments = [
     periode: "11-06-2025 s.d. 11-06-2026",
     deskripsi: "Kuliah Dosen Tamu antara UNILA dan UNJ",
     dasarDokumen: "Tidak ada",
-    unitPelaksana: "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
+    unitPelaksana:
+      "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
     penanggungJawab: "Dr. Rina Sari, M.Pd.",
     unitPenanggungJawab: "Fakultas Keguruan dan Ilmu Pendidikan",
     sumberDana: "Lainnya",
@@ -61,7 +63,8 @@ const sampleDocuments = [
     periode: "01-01-2025 s.d. 31-12-2025",
     deskripsi: "Kegiatan Tri Darma Perguruan Tinggi",
     dasarDokumen: "Tidak ada",
-    unitPelaksana: "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
+    unitPelaksana:
+      "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
     penanggungJawab: "Dr. Ahmad Fauzi, M.Pd.",
     unitPenanggungJawab: "Fakultas Keguruan dan Ilmu Pendidikan",
     sumberDana: "Lainnya",
@@ -82,7 +85,8 @@ const sampleDocuments = [
     periode: "31-10-2025 s.d. 31-10-2030",
     deskripsi: "Nota Kesepahaman untuk kerjasama pendidikan",
     dasarDokumen: "Tidak ada",
-    unitPelaksana: "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
+    unitPelaksana:
+      "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
     penanggungJawab: "Prof. Dr. Siti Aminah, M.Pd.",
     unitPenanggungJawab: "Rektorat",
     sumberDana: "APBN",
@@ -102,7 +106,8 @@ const sampleDocuments = [
     status: "Aktif",
     statusDokumen: "Aktif",
     periode: "04-08-2025 s.d. 04-08-2026",
-    deskripsi: "Implementation Arrangement untuk pertukaran mahasiswa dan dosen",
+    deskripsi:
+      "Implementation Arrangement untuk pertukaran mahasiswa dan dosen",
     dasarDokumen: "MoU 7890/UN26.13/KS.00.00/2024",
     unitPelaksana: "1. 87206 | S1 | S1 Pendidikan Bahasa Inggris",
     penanggungJawab: "Dr. Linda Mayasari, M.Pd.",
@@ -125,7 +130,8 @@ const sampleDocuments = [
     periode: "05-12-2025 s.d. 05-12-2030",
     deskripsi: "Perjanjian Kerja Sama bidang pendidikan dan penelitian",
     dasarDokumen: "Tidak ada",
-    unitPelaksana: "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
+    unitPelaksana:
+      "1. 87205 | S1 | S1 Pendidikan Pancasila Dan Kewarganegaraan",
     penanggungJawab: "Dr. Yudi Hartono, M.Pd.",
     unitPenanggungJawab: "Fakultas Keguruan dan Ilmu Pendidikan",
     sumberDana: "APBN",
@@ -135,56 +141,61 @@ const sampleDocuments = [
       "Pihak Ke-1 | Universitas Lampung | Dr. Yudi Hartono, M.Pd.\nPihak Ke-2 | STIT Pringsewu | Dr. Muhammad Ali, M.Pd.I.",
     skala: "Lokal",
   },
-]
+];
 
 interface RepositoryTableProps {
-  onViewDetail: (document: any) => void
+  onViewDetail: (document: any) => void;
 }
 
 export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
-  const [search, setSearch] = useState("")
-  const [entriesPerPage, setEntriesPerPage] = useState(10)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [search, setSearch] = useState("");
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{
-    key: string | null
-    direction: "asc" | "desc"
-  }>({ key: null, direction: "asc" })
+    key: string | null;
+    direction: "asc" | "desc";
+  }>({ key: null, direction: "asc" });
 
   // Filter documents based on search
   const filteredDocuments = sampleDocuments.filter((doc) =>
-    Object.values(doc).some((value) => value.toString().toLowerCase().includes(search.toLowerCase())),
-  )
+    Object.values(doc).some((value) =>
+      value.toString().toLowerCase().includes(search.toLowerCase()),
+    ),
+  );
 
   // Sort documents
   const sortedDocuments = [...filteredDocuments].sort((a, b) => {
-    if (!sortConfig.key) return 0
+    if (!sortConfig.key) return 0;
 
-    const aValue = a[sortConfig.key as keyof typeof a]
-    const bValue = b[sortConfig.key as keyof typeof b]
+    const aValue = a[sortConfig.key as keyof typeof a];
+    const bValue = b[sortConfig.key as keyof typeof b];
 
-    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1
-    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1
-    return 0
-  })
+    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
+  });
 
   // Pagination
-  const totalPages = Math.ceil(sortedDocuments.length / entriesPerPage)
-  const startIndex = (currentPage - 1) * entriesPerPage
-  const endIndex = startIndex + entriesPerPage
-  const currentDocuments = sortedDocuments.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(sortedDocuments.length / entriesPerPage);
+  const startIndex = (currentPage - 1) * entriesPerPage;
+  const endIndex = startIndex + entriesPerPage;
+  const currentDocuments = sortedDocuments.slice(startIndex, endIndex);
 
   const handleSort = (key: string) => {
     setSortConfig({
       key,
-      direction: sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc",
-    })
-  }
+      direction:
+        sortConfig.key === key && sortConfig.direction === "asc"
+          ? "desc"
+          : "asc",
+    });
+  };
 
   const handleDownload = (doc: any) => {
     // Implement download functionality
-    console.log("[v0] Download document:", doc.nomor)
-    alert(`Downloading: ${doc.nomor}`)
-  }
+    console.log("[v0] Download document:", doc.nomor);
+    alert(`Downloading: ${doc.nomor}`);
+  };
 
   return (
     <div className="p-6">
@@ -192,8 +203,17 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-foreground">Repository</h1>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="text-primary border-primary bg-transparent">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-primary border-primary bg-transparent"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -203,15 +223,43 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
             </svg>
             Refresh
           </Button>
-          <Button variant="outline" size="sm" className="text-secondary border-secondary bg-transparent">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-secondary border-secondary bg-transparent"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
             </svg>
             Add
           </Button>
-          <Button variant="outline" size="sm" className="text-destructive border-destructive bg-transparent">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-destructive border-destructive bg-transparent"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
             Back
           </Button>
@@ -225,8 +273,8 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
           <select
             value={entriesPerPage}
             onChange={(e) => {
-              setEntriesPerPage(Number(e.target.value))
-              setCurrentPage(1)
+              setEntriesPerPage(Number(e.target.value));
+              setCurrentPage(1);
             }}
             className="px-3 py-1.5 border border-border rounded-md bg-background text-sm"
           >
@@ -244,8 +292,8 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
             type="text"
             value={search}
             onChange={(e) => {
-              setSearch(e.target.value)
-              setCurrentPage(1)
+              setSearch(e.target.value);
+              setCurrentPage(1);
             }}
             className="w-64"
             placeholder="Search..."
@@ -300,7 +348,9 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
                     ))}
                 </div>
               </th>
-              <th className="px-4 py-3 text-left font-medium text-foreground w-1/3">Judul Kegiatan</th>
+              <th className="px-4 py-3 text-left font-medium text-foreground w-1/3">
+                Judul Kegiatan
+              </th>
               <th
                 className="px-4 py-3 text-left font-medium text-foreground cursor-pointer hover:bg-muted"
                 onClick={() => handleSort("expiredDate")}
@@ -329,16 +379,28 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
                     ))}
                 </div>
               </th>
-              <th className="px-4 py-3 text-center font-medium text-foreground">Action</th>
+              <th className="px-4 py-3 text-center font-medium text-foreground">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentDocuments.map((doc, index) => (
-              <tr key={doc.id} className="border-t border-border hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-3 text-foreground">{startIndex + index + 1}</td>
-                <td className="px-4 py-3 text-foreground font-medium">{doc.jenis}</td>
+              <tr
+                key={doc.id}
+                className="border-t border-border hover:bg-muted/30 transition-colors"
+              >
+                <td className="px-4 py-3 text-foreground">
+                  {startIndex + index + 1}
+                </td>
+                <td className="px-4 py-3 text-foreground font-medium">
+                  {doc.jenis}
+                </td>
                 <td className="px-4 py-3 text-foreground">{doc.nomor}</td>
-                <td className="px-4 py-3 text-primary hover:underline cursor-pointer" onClick={() => onViewDetail(doc)}>
+                <td
+                  className="px-4 py-3 text-primary hover:underline cursor-pointer"
+                  onClick={() => onViewDetail(doc)}
+                >
                   {doc.judul}
                 </td>
                 <td className="px-4 py-3 text-foreground">{doc.expiredDate}</td>
@@ -378,10 +440,17 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-4">
         <div className="text-sm text-muted-foreground">
-          Showing {startIndex + 1} to {Math.min(endIndex, sortedDocuments.length)} of {sortedDocuments.length} entries
+          Showing {startIndex + 1} to{" "}
+          {Math.min(endIndex, sortedDocuments.length)} of{" "}
+          {sortedDocuments.length} entries
         </div>
         <div className="flex gap-1">
-          <Button variant="outline" size="sm" onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+          >
             First
           </Button>
           <Button
@@ -398,7 +467,9 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
               variant={currentPage === page ? "default" : "outline"}
               size="sm"
               onClick={() => setCurrentPage(page)}
-              className={currentPage === page ? "bg-primary text-primary-foreground" : ""}
+              className={
+                currentPage === page ? "bg-primary text-primary-foreground" : ""
+              }
             >
               {page}
             </Button>
@@ -406,7 +477,9 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
             disabled={currentPage === totalPages}
           >
             Next
@@ -422,5 +495,5 @@ export function RepositoryTable({ onViewDetail }: RepositoryTableProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -8,13 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 import { Trash2 } from "lucide-react";
-import {
-  RefreshCcw,
-  Plus,
-  ArrowLeft,
-  Download,
-  List,
-} from "lucide-react";
+import { RefreshCcw, Plus, ArrowLeft, Download, List } from "lucide-react";
 
 /* ================= TYPES ================= */
 
@@ -39,30 +33,29 @@ type RepositoryDoc = {
   skala?: string;
 };
 
-
 /* ================= DUMMY DATA ================= */
 
 const DUMMY_DATA: RepositoryDoc[] = [
   {
-  id: 1,
-  jenis: "IA",
-  nomor: "122/UN26.32/TI.00.03/2019",
-  judul:
-    "Fasilitasi Pelaksanaan Tes Tertulis Dengan Metode Computer Assisted Test (CAT) Seleksi Calon Anggota KPU Kabupaten/Kota Di Provinsi Lampung Periode 2019–2024",
-  tglMulai: "11/09/2019",
-  status: "Tidak Aktif",
-  periode: "11-09-2019 s.d 12-09-2019",
-  deskripsi:
-    "Memfasilitasi pelaksanaan tes metode CAT di Gedung/Laboratorium UPT.TIK",
-  dasarDokumen: "Tidak ada",
-  unitPelaksana: "1. UN26.14 | N | UPA Teknologi Informasi dan Komunikasi",
-  sumberDana: "Dinas Provinsi",
-  anggaran: "0,00",
-  paraPenggiat:
-    "Pihak Ke-1 | KPU Provinsi Lampung | Drs. Amrozie W. M.M\n" +
-    "Pihak Ke-2 | Universitas Lampung | Dr. Ing. Ardian Ulvan, S.T., M.Sc",
-  skala: "",
-},
+    id: 1,
+    jenis: "IA",
+    nomor: "122/UN26.32/TI.00.03/2019",
+    judul:
+      "Fasilitasi Pelaksanaan Tes Tertulis Dengan Metode Computer Assisted Test (CAT) Seleksi Calon Anggota KPU Kabupaten/Kota Di Provinsi Lampung Periode 2019–2024",
+    tglMulai: "11/09/2019",
+    status: "Tidak Aktif",
+    periode: "11-09-2019 s.d 12-09-2019",
+    deskripsi:
+      "Memfasilitasi pelaksanaan tes metode CAT di Gedung/Laboratorium UPT.TIK",
+    dasarDokumen: "Tidak ada",
+    unitPelaksana: "1. UN26.14 | N | UPA Teknologi Informasi dan Komunikasi",
+    sumberDana: "Dinas Provinsi",
+    anggaran: "0,00",
+    paraPenggiat:
+      "Pihak Ke-1 | KPU Provinsi Lampung | Drs. Amrozie W. M.M\n" +
+      "Pihak Ke-2 | Universitas Lampung | Dr. Ing. Ardian Ulvan, S.T., M.Sc",
+    skala: "",
+  },
 ];
 
 /* ================= STATUS BADGE ================= */
@@ -74,7 +67,7 @@ function StatusBadge({ status }: { status: "Aktif" | "Tidak Aktif" }) {
         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
         status === "Aktif"
           ? "bg-green-100 text-green-700 border border-green-200"
-          : "bg-gray-100 text-gray-600 border border-gray-200"
+          : "bg-gray-100 text-gray-600 border border-gray-200",
       )}
     >
       {status}
@@ -87,13 +80,16 @@ function StatusBadge({ status }: { status: "Aktif" | "Tidak Aktif" }) {
 export default function MyRepositoryPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
-const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
+  const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
 
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
 
   const [deleteDoc, setDeleteDoc] = useState<RepositoryDoc | null>(null);
+useEffect(() => {
+  document.title = "SIKERMA - My Repository";
+}, []);
 
   const handleDownload = (doc: RepositoryDoc) => {
     alert(`Download dokumen: ${doc.nomor}`);
@@ -105,16 +101,13 @@ const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
     return DUMMY_DATA.filter((item) =>
       `${item.jenis} ${item.nomor} ${item.judul} ${item.status}`
         .toLowerCase()
-        .includes(search.toLowerCase())
+        .includes(search.toLowerCase()),
     );
   }, [search]);
 
   const totalPages = Math.ceil(filteredData.length / limit);
 
-  const paginatedData = filteredData.slice(
-    (page - 1) * limit,
-    page * limit
-  );
+  const paginatedData = filteredData.slice((page - 1) * limit, page * limit);
 
   useEffect(() => {
     setPage(1);
@@ -131,7 +124,7 @@ const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
       <div
         className={cn(
           "relative transition-all duration-300",
-          sidebarExpanded ? "md:ml-64" : "md:ml-[72px]"
+          sidebarExpanded ? "md:ml-64" : "md:ml-[72px]",
         )}
       >
         <Header onMenuClick={() => setSidebarOpen(true)} />
@@ -143,22 +136,12 @@ const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
               <h1 className="text-lg font-semibold">My Repository</h1>
 
               <div className="flex gap-2">
-                <Button size="sm" variant="outline">
-                  <RefreshCcw className="w-4 h-4 mr-1" />
-                  Refresh
-                </Button>
-
                 <Link href="/kerjasama/repository/create">
                   <Button size="sm" variant="outline">
                     <Plus className="w-4 h-4 mr-1" />
                     Add
                   </Button>
                 </Link>
-
-                <Button size="sm" variant="outline">
-                  <ArrowLeft className="w-4 h-4 mr-1" />
-                  Back
-                </Button>
               </div>
             </div>
 
@@ -215,9 +198,7 @@ const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
                         </td>
                         <td className="px-3 py-2 text-center">{item.jenis}</td>
                         <td className="px-3 py-2">{item.nomor}</td>
-                        <td className="px-3 py-2 max-w-xl">
-                          {item.judul}
-                        </td>
+                        <td className="px-3 py-2 max-w-xl">{item.judul}</td>
                         <td className="px-3 py-2 text-center">
                           {item.tglMulai}
                         </td>
@@ -235,44 +216,44 @@ const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
                               <Download className="w-4 h-4" />
                             </Button>
 
-                          <Button
-  size="sm"
-  variant="outline"
-  title="Detail"
-  onClick={() => setSelectedDoc(item)}
->
-  <List className="w-4 h-4" />
-</Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              title="Detail"
+                              onClick={() => setSelectedDoc(item)}
+                            >
+                              <List className="w-4 h-4" />
+                            </Button>
 
-
-                            <Link href={`/kerjasama/repository/edit/${item.id}`}>
+                            <Link
+                              href={`/kerjasama/repository/edit/${item.id}`}
+                            >
                               <Button size="sm" variant="outline" title="Edit">
                                 ✏️
                               </Button>
                             </Link>
 
-<Button
-  size="sm"
-  variant="outline"
-  title="Hapus Dokumen"
-  onClick={() => setDeleteDoc(item)}
-  className="
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              title="Hapus Dokumen"
+                              onClick={() => setDeleteDoc(item)}
+                              className="
     group
     border-red-200
     hover:bg-red-600 hover:border-red-600
     transition-colors
   "
->
-  <Trash2
-    className="
+                            >
+                              <Trash2
+                                className="
       w-4 h-4
       text-black
       group-hover:text-white
       transition-colors
     "
-  />
-</Button>
-
+                              />
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -318,85 +299,85 @@ const [selectedDoc, setSelectedDoc] = useState<RepositoryDoc | null>(null);
         </main>
       </div>
 
-{/* ================= MODAL DETAIL ================= */}
-{selectedDoc && (
-  <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-    <div
-      className="
+      {/* ================= MODAL DETAIL ================= */}
+      {selectedDoc && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+          <div
+            className="
         bg-white rounded-xl shadow-xl
         w-full max-w-2xl
         max-h-[80vh]
         flex flex-col
       "
-    >
-      {/* HEADER (fixed) */}
-      <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
-        <h2 className="text-base font-semibold text-foreground">
-          Detail Dokumen Kerjasama
-        </h2>
-        <button
-          onClick={() => setSelectedDoc(null)}
-          className="text-muted-foreground hover:text-foreground"
-        >
-          ✕
-        </button>
-      </div>
-
-      {/* BODY (scrollable) */}
-      <div className="px-6 py-4 text-sm space-y-3 overflow-y-auto">
-        {[
-          ["Jenis Dokumen", selectedDoc.jenis],
-          ["Nomor Dokumen", selectedDoc.nomor],
-          ["Judul Kerjasama", selectedDoc.judul],
-          ["Status Dokumen", selectedDoc.status],
-          ["Periode", selectedDoc.periode],
-          ["Deskripsi", selectedDoc.deskripsi],
-          ["Dasar Dokumen", selectedDoc.dasarDokumen],
-          ["Unit Pelaksana", selectedDoc.unitPelaksana],
-          ["Penanggung Jawab", selectedDoc.penanggungJawab],
-          ["Unit Penanggungjawab", selectedDoc.unitPenanggungJawab],
-          ["Sumber Dana", selectedDoc.sumberDana],
-          ["Anggaran", selectedDoc.anggaran],
-          ["Bentuk Kegiatan", selectedDoc.bentukKegiatan],
-          ["Para Penggiat", selectedDoc.paraPenggiat],
-          ["Skala", selectedDoc.skala],
-        ].map(([label, value]) => (
-          <div
-            key={label}
-            className="grid grid-cols-[170px_1fr] gap-4 py-2 border-b border-muted"
           >
-            <span className="text-muted-foreground">{label}</span>
-            <span className="text-foreground leading-relaxed whitespace-pre-line">
-              {value || "-"}
-            </span>
-          </div>
-        ))}
+            {/* HEADER (fixed) */}
+            <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
+              <h2 className="text-base font-semibold text-foreground">
+                Detail Dokumen Kerjasama
+              </h2>
+              <button
+                onClick={() => setSelectedDoc(null)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                ✕
+              </button>
+            </div>
 
-        {/* DOWNLOAD */}
-        <div className="grid grid-cols-[170px_1fr] gap-4 py-4 border-b border-muted">
-          <span className="text-muted-foreground">Download File</span>
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="outline">
-              📄 File Dokumen
-            </Button>
-            <Button size="sm" variant="outline">
-              🔗 Link Dokumen
-            </Button>
-            <Button size="sm" variant="outline">
-              📑 Kontrak
-            </Button>
-            <Button size="sm" variant="outline">
-              📘 KAK
-            </Button>
-            <Button size="sm" variant="outline">
-              📊 RAB
-            </Button>
+            {/* BODY (scrollable) */}
+            <div className="px-6 py-4 text-sm space-y-3 overflow-y-auto">
+              {[
+                ["Jenis Dokumen", selectedDoc.jenis],
+                ["Nomor Dokumen", selectedDoc.nomor],
+                ["Judul Kerjasama", selectedDoc.judul],
+                ["Status Dokumen", selectedDoc.status],
+                ["Periode", selectedDoc.periode],
+                ["Deskripsi", selectedDoc.deskripsi],
+                ["Dasar Dokumen", selectedDoc.dasarDokumen],
+                ["Unit Pelaksana", selectedDoc.unitPelaksana],
+                ["Penanggung Jawab", selectedDoc.penanggungJawab],
+                ["Unit Penanggungjawab", selectedDoc.unitPenanggungJawab],
+                ["Sumber Dana", selectedDoc.sumberDana],
+                ["Anggaran", selectedDoc.anggaran],
+                ["Bentuk Kegiatan", selectedDoc.bentukKegiatan],
+                ["Para Penggiat", selectedDoc.paraPenggiat],
+                ["Skala", selectedDoc.skala],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="grid grid-cols-[170px_1fr] gap-4 py-2 border-b border-muted"
+                >
+                  <span className="text-muted-foreground">{label}</span>
+                  <span className="text-foreground leading-relaxed whitespace-pre-line">
+                    {value || "-"}
+                  </span>
+                </div>
+              ))}
+
+              {/* DOWNLOAD */}
+              <div className="grid grid-cols-[170px_1fr] gap-4 py-4 border-b border-muted">
+                <span className="text-muted-foreground">Download File</span>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline">
+                    📄 File Dokumen
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    🔗 Link Dokumen
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    📑 Kontrak
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    📘 KAK
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    📊 RAB
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
       {/* DELETE CONFIRM (OPSIONAL) */}
       {deleteDoc && (

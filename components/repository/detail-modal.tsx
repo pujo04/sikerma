@@ -1,26 +1,33 @@
-"use client"
+"use client";
 
-import { X, Download, LinkIcon, FileText, File } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { X, Download, LinkIcon, FileText, File } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DetailModalProps {
-  document: any
-  onClose: () => void
+  document: any;
+  onClose: () => void;
 }
 
 export function DetailModal({ document, onClose }: DetailModalProps) {
   const handleDownload = (type: string) => {
-    console.log("[v0] Download:", type, document.nomor)
-    alert(`Downloading ${type} for: ${document.nomor}`)
-  }
+    console.log("[v0] Download:", type, document.nomor);
+    alert(`Downloading ${type} for: ${document.nomor}`);
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-card rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
-          <h2 className="text-xl font-semibold text-foreground">Detail Dokumen Kerjasama</h2>
-          <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0 hover:bg-muted">
+          <h2 className="text-xl font-semibold text-foreground">
+            Detail Dokumen Kerjasama
+          </h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-8 w-8 p-0 hover:bg-muted"
+          >
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -34,17 +41,28 @@ export function DetailModal({ document, onClose }: DetailModalProps) {
             <DetailItem label="Deskripsi" value={document.deskripsi} />
             <DetailItem label="Dasar Dokumen" value={document.dasarDokumen} />
             <DetailItem label="Unit Pelaksana" value={document.unitPelaksana} />
-            <DetailItem label="Penanggung jawab" value={document.penanggungJawab} />
-            <DetailItem label="Unit Penanggung jawab" value={document.unitPenanggungJawab} />
+            <DetailItem
+              label="Penanggung jawab"
+              value={document.penanggungJawab}
+            />
+            <DetailItem
+              label="Unit Penanggung jawab"
+              value={document.unitPenanggungJawab}
+            />
             <DetailItem label="Sumber Dana" value={document.sumberDana} />
             <DetailItem label="Anggaran" value={document.anggaran} />
-            <DetailItem label="Bentuk Kegiatan" value={document.bentukKegiatan} />
+            <DetailItem
+              label="Bentuk Kegiatan"
+              value={document.bentukKegiatan}
+            />
             <DetailItem label="Para Penggiat" value={document.paraPenggiat} />
             <DetailItem label="Skala" value={document.skala} />
 
             {/* Download Files */}
             <div className="grid grid-cols-[200px,1fr] gap-4 border-t border-border pt-4">
-              <div className="text-sm font-medium text-foreground">Download File</div>
+              <div className="text-sm font-medium text-foreground">
+                Download File
+              </div>
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
@@ -96,8 +114,17 @@ export function DetailModal({ document, onClose }: DetailModalProps) {
 
             {/* Claim Dokumen */}
             <div className="border-t border-border pt-4 text-center">
-              <Button variant="outline" size="sm" className="text-muted-foreground bg-transparent">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-muted-foreground bg-transparent"
+              >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -112,7 +139,7 @@ export function DetailModal({ document, onClose }: DetailModalProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function DetailItem({ label, value }: { label: string; value: string }) {
@@ -121,5 +148,5 @@ function DetailItem({ label, value }: { label: string; value: string }) {
       <div className="text-sm font-medium text-foreground">{label}</div>
       <div className="text-sm text-foreground whitespace-pre-line">{value}</div>
     </div>
-  )
+  );
 }
