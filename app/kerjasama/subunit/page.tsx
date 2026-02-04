@@ -6,24 +6,30 @@ import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, ArrowLeft, Eye } from "lucide-react";
+import { RefreshCcw, ArrowLeft, Eye, X } from "lucide-react";
 
 /* ================= TYPES ================= */
-
 type Subunit = {
   id: number;
   kodeUnit: string;
   namaUnit: string;
-  jumlahDokumen: number;
+  dokumen: {
+    mou: number;
+    moa: number;
+    ia: number;
+  };
 };
 
 /* ================= DUMMY DATA ================= */
-
 const DUMMY_SUBUNIT: Subunit[] = Array.from({ length: 37 }, (_, i) => ({
   id: i + 1,
   kodeUnit: `UN26.${100 + i}`,
   namaUnit: `Sub Unit Kerja ${i + 1}`,
-  jumlahDokumen: (i * 3) % 20,
+  dokumen: {
+    mou: (i * 2) % 10,
+    moa: (i * 3) % 8,
+    ia: (i * 4) % 6,
+  },
 }));
 
 /* ================= PAGE ================= */
@@ -35,9 +41,9 @@ export default function SubunitPage() {
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
-useEffect(() => {
-  document.title = "SIKERMA - Dokumen Subunit";
-}, []);
+  useEffect(() => {
+    document.title = "SIKERMA - Dokumen Subunit";
+  }, []);
   /* ================= FILTER ================= */
 
   const filteredData = useMemo(() => {
@@ -51,6 +57,7 @@ useEffect(() => {
   /* ================= PAGINATION ================= */
 
   const totalPages = Math.ceil(filteredData.length / limit);
+  const [selectedSubunit, setSelectedSubunit] = useState<Subunit | null>(null);
 
   const paginatedData = filteredData.slice((page - 1) * limit, page * limit);
 
@@ -155,20 +162,23 @@ useEffect(() => {
                       ) : (
                         paginatedData.map((item, index) => (
                           <tr key={item.id} className="border-b">
-                            <td className="px-3 py-2">
+                            <td className="px-3 py-2 text-center">
                               {(page - 1) * limit + index + 1}
                             </td>
-                            <td className="px-3 py-2">{item.kodeUnit}</td>
-                            <td className="px-3 py-2">{item.namaUnit}</td>
+                            <td className="px-3 py-2 text-center">{item.kodeUnit}</td>
+                            <td className="px-3 py-2 text-center">{item.namaUnit}</td>
                             <td className="px-3 py-2 text-center">
-                              {item.jumlahDokumen}
+                              {item.dokumen.mou + item.dokumen.moa + item.dokumen.ia}
                             </td>
                             <td className="px-3 py-2 text-center">
-                              <Link href={`/kerjasama/subunit/${item.id}`}>
-                                <Button size="sm" variant="outline">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                              </Link>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                title="Detail Dokumen"
+                                onClick={() => setSelectedSubunit(item)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
                             </td>
                           </tr>
                         ))
@@ -223,6 +233,73 @@ useEffect(() => {
                 </div>
               </div>
             </div>
+            {selectedSubunit && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="bg-white rounded-lg w-full max-w-md p-6 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-semibold">
+                      Detail Dokumen
+                    </h2>
+                    <button
+                      onClick={() => setSelectedSubunit(null)}
+                      className="
+                        group
+                        rounded-sm
+                        p-1
+                        transition-colors
+                        hover:bg-[#0079C4]
+                      "
+                    >
+                      <X
+                        className="
+                          w-4 h-4
+                          text-muted-foreground
+                          transition-colors
+                          group-hover:text-white
+                        "
+                      />
+                    </button>
+                  </div>
+
+                  <div className="text-sm space-y-2">
+                    <p><strong>Kode Unit:</strong> {selectedSubunit.kodeUnit}</p>
+                    <p><strong>Nama Unit:</strong> {selectedSubunit.namaUnit}</p>
+                  </div>
+
+                  <div className="border rounded-lg divide-y text-sm">
+                    <div className="flex justify-between px-4 py-2">
+                      <span>MoU</span>
+                      <span>{selectedSubunit.dokumen.mou}</span>
+                    </div>
+                    <div className="flex justify-between px-4 py-2">
+                      <span>MoA</span>
+                      <span>{selectedSubunit.dokumen.moa}</span>
+                    </div>
+                    <div className="flex justify-between px-4 py-2">
+                      <span>IA</span>
+                      <span>{selectedSubunit.dokumen.ia}</span>
+                    </div>
+                    <div className="flex justify-between px-4 py-2 font-semibold bg-muted/40">
+                      <span>Total Dokumen</span>
+                      <span>
+                        {selectedSubunit.dokumen.mou +
+                          selectedSubunit.dokumen.moa +
+                          selectedSubunit.dokumen.ia}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedSubunit(null)}
+                    >
+                      Tutup
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </main>
         </div>
       </div>

@@ -5,7 +5,8 @@ import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, ArrowLeft } from "lucide-react";
+import { RefreshCcw, ArrowLeft, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 /* ================= DUMMY DATA ================= */
 
@@ -14,16 +15,39 @@ type Dokumen = {
   nomor: string;
   judul: string;
   tanggal: string;
-  status: "Menunggu" | "Disetujui" | "Ditolak";
+  status: "Menunggu Validasi" | "Ditolak";
 };
 
-const DUMMY_DATA: Dokumen[] = Array.from({ length: 323 }, (_, i) => ({
-  id: i + 1,
-  nomor: `DOC-${String(i + 1).padStart(4, "0")}`,
-  judul: `Kerja Sama Institusi ${i + 1}`,
-  tanggal: "2025-01-10",
-  status: "Menunggu",
-}));
+const DUMMY_DATA: Dokumen[] = [
+  {
+    id: 1,
+    nomor: "DOC-0001",
+    judul: "Kerja Sama Universitas A",
+    tanggal: "2025-01-10",
+    status: "Menunggu Validasi",
+  },
+  {
+    id: 2,
+    nomor: "DOC-0002",
+    judul: "Kerja Sama Industri B",
+    tanggal: "2025-01-11",
+    status: "Ditolak",
+  },
+  {
+    id: 3,
+    nomor: "DOC-0003",
+    judul: "MoU Penelitian C",
+    tanggal: "2025-01-12",
+    status: "Menunggu Validasi",
+  },
+  {
+    id: 4,
+    nomor: "DOC-0004",
+    judul: "Kerja Sama Internasional D",
+    tanggal: "2025-01-13",
+    status: "Ditolak",
+  },
+];
 
 /* ================= PAGE ================= */
 
@@ -130,12 +154,12 @@ useEffect(() => {
                   <table className="w-full text-sm border-t">
                     <thead className="bg-muted/40">
                       <tr>
-                        <th className="px-3 py-2 text-left">No</th>
-                        <th className="px-3 py-2 text-left">Nomor Dokumen</th>
-                        <th className="px-3 py-2 text-left">Judul Kegiatan</th>
-                        <th className="px-3 py-2 text-left">Tgl. Unggah</th>
-                        <th className="px-3 py-2 text-left">Status</th>
-                        <th className="px-3 py-2 text-left">Action</th>
+                        <th className="px-3 py-2 text-center">No</th>
+                        <th className="px-3 py-2 text-center">Nomor Dokumen</th>
+                        <th className="px-3 py-2 text-center">Judul Kegiatan</th>
+                        <th className="px-3 py-2 text-center">Tgl. Unggah</th>
+                        <th className="px-3 py-2 text-center">Status</th>
+                        <th className="px-3 py-2 text-center">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -151,21 +175,77 @@ useEffect(() => {
                       ) : (
                         paginatedData.map((item, index) => (
                           <tr key={item.id} className="border-b">
-                            <td className="px-3 py-2">
+                            <td className="px-3 py-2 text-center">
                               {(page - 1) * limit + index + 1}
                             </td>
-                            <td className="px-3 py-2">{item.nomor}</td>
-                            <td className="px-3 py-2">{item.judul}</td>
-                            <td className="px-3 py-2">{item.tanggal}</td>
-                            <td className="px-3 py-2">
-                              <span className="px-2 py-0.5 rounded bg-yellow-100 text-yellow-700 text-xs">
+                            <td className="px-3 py-2 text-center">{item.nomor}</td>
+                            <td className="px-3 py-2 text-center">{item.judul}</td>
+                            <td className="px-3 py-2 text-center">{item.tanggal}</td>
+                            <td className="px-3 py-2 text-center">
+                              <span
+                                className={cn(
+                                  "px-2 py-0.5 rounded text-xs font-medium",
+                                  item.status === "Menunggu Validasi"
+                                    ? "bg-yellow-600 text-white"
+                                    : "bg-red-600 text-white"
+                                )}
+                              >
                                 {item.status}
                               </span>
                             </td>
-                            <td className="px-3 py-2">
-                              <Button size="sm" variant="outline">
-                                Detail
-                              </Button>
+                            <td className="px-3 py-2 text-center">
+                              {item.status === "Ditolak" ? (
+                                <div className="flex justify-center gap-2">
+                                  {/* EDIT */}
+                                  <Link href={`/kerjasama/repository/edit/${item.id}`}>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      title="Edit Dokumen"
+                                      className="
+            group
+            border-blue-200
+            hover:bg-blue-600 hover:border-blue-600
+            transition-colors
+          "
+                                    >
+                                      <Pencil
+                                        className="
+              w-4 h-4
+              text-black
+              group-hover:text-white
+              transition-colors
+            "
+                                      />
+                                    </Button>
+                                  </Link>
+
+                                  {/* HAPUS */}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    title="Hapus Dokumen"
+                                    onClick={() => setDeleteDoc(item)}
+                                    className="
+          group
+          border-red-200
+          hover:bg-red-600 hover:border-red-600
+          transition-colors
+        "
+                                  >
+                                    <Trash2
+                                      className="
+            w-4 h-4
+            text-black
+            group-hover:text-white
+            transition-colors
+          "
+                                    />
+                                  </Button>
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground text-xs">-</span>
+                              )}
                             </td>
                           </tr>
                         ))

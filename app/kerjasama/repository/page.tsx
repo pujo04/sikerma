@@ -174,31 +174,31 @@ useEffect(() => {
                   <table className="w-full text-sm border-t">
                     <thead className="bg-muted/40">
                       <tr>
-                        <th className="px-3 py-2">No</th>
-                        <th className="px-3 py-2">Jenis</th>
-                        <th className="px-3 py-2">Nomor Dokumen</th>
-                        <th className="px-3 py-2">Judul Kegiatan</th>
-                        <th className="px-3 py-2">Expired Date</th>
-                        <th className="px-3 py-2">Status</th>
-                        <th className="px-3 py-2">Action</th>
+                        <th className="px-3 py-2 text-center">No</th>
+                        <th className="px-3 py-2 text-center">Jenis</th>
+                        <th className="px-3 py-2 text-center">Nomor Dokumen</th>
+                        <th className="px-3 py-2 text-center">Judul Kegiatan</th>
+                        <th className="px-3 py-2 text-center">Expired Date</th>
+                        <th className="px-3 py-2 text-center">Status</th>
+                        <th className="px-3 py-2 text-center">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {paginatedData.map((item, index) => (
                         <tr key={item.id} className="border-b">
-                          <td className="px-3 py-2">
+                          <td className="px-3 py-2 text-center">
                             {(page - 1) * limit + index + 1}
                           </td>
-                          <td className="px-3 py-2">{item.jenis}</td>
-                          <td className="px-3 py-2">{item.nomor}</td>
-                          <td className="px-3 py-2">{item.judul}</td>
-                          <td className="px-3 py-2">{item.expired}</td>
-                          <td className="px-3 py-2">
+                          <td className="px-3 py-2 text-center">{item.jenis}</td>
+                          <td className="px-3 py-2 text-center">{item.nomor}</td>
+                          <td className="px-3 py-2 text-center">{item.judul}</td>
+                          <td className="px-3 py-2 text-center">{item.expired}</td>
+                          <td className="px-3 py-2 text-center">
                             <span className="px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs">
                               {item.status}
                             </span>
                           </td>
-                          <td className="px-3 py-2 flex gap-1">
+                          <td className="px-3 py-2 flex gap-1 justify-center">
                             {/* DETAIL */}
                             <Button
                               size="sm"
@@ -288,9 +288,22 @@ useEffect(() => {
               </h2>
               <button
                 onClick={() => setSelectedDoc(null)}
-                className="text-muted-foreground hover:text-foreground"
+                className="
+    group
+    rounded-sm
+    p-1
+    transition-colors
+    hover:bg-[#0079C4]
+  "
               >
-                <X className="w-5 h-5" />
+                <X
+                  className="
+      w-4 h-4
+      text-muted-foreground
+      transition-colors
+      group-hover:text-white
+    "
+                />
               </button>
             </div>
 

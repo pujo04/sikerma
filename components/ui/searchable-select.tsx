@@ -33,6 +33,7 @@ interface SearchableSelectProps {
   placeholder?: string;
   disabled?: boolean;
   size?: "sm" | "xs";
+  required?: boolean;
   onChange: (value: string | number) => void;
 }
 
@@ -43,8 +44,9 @@ export function SearchableSelect({
   value,
   options,
   placeholder = "- Pilih -",
-  disabled,
+  disabled = false,
   size = "sm",
+  required = true,
   onChange,
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false);
@@ -58,15 +60,20 @@ export function SearchableSelect({
   const getValue = (opt: Option) =>
     typeof opt === "string" ? opt : opt.value;
 
-  const selectedLabel =
-    options.find((opt) => getValue(opt) === value)?.label ??
-    String(value || "");
+  const selectedOption = options.find(
+    (opt) => getValue(opt) === value
+  );
+
+  const selectedLabel = selectedOption
+    ? getLabel(selectedOption)
+    : "";
 
   return (
     <div className="space-y-1 relative w-full">
       {label && (
         <label className={cn(labelClass, "font-medium")}>
-          {label} <span className="text-red-500">*</span>
+          {label}
+          {required && <span className="text-red-500"> *</span>}
         </label>
       )}
 
@@ -95,7 +102,11 @@ export function SearchableSelect({
           side="bottom"
           align="start"
           sideOffset={4}
-          className="z-[1000] p-1 w-[--radix-popover-trigger-width]"
+          className="
+            z-[10000]
+            p-1
+            w-[--radix-popover-trigger-width]
+          "
         >
           <Command>
             <CommandInput
@@ -114,7 +125,7 @@ export function SearchableSelect({
 
                 return (
                   <CommandItem
-                    key={String(optValue)} // ✅ KEY UNIK
+                    key={String(optValue)}
                     value={String(optLabel)}
                     onSelect={() => {
                       onChange(optValue);
@@ -125,10 +136,14 @@ export function SearchableSelect({
                     <Check
                       className={cn(
                         "mt-0.5 h-4 w-4 shrink-0",
-                        value === optValue ? "opacity-100" : "opacity-0",
+                        value === optValue
+                          ? "opacity-100"
+                          : "opacity-0",
                       )}
                     />
-                    <span className="break-words">{optLabel}</span>
+                    <span className="break-words">
+                      {optLabel}
+                    </span>
                   </CommandItem>
                 );
               })}

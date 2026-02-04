@@ -124,10 +124,26 @@ const menuItems: MenuItem[] = [
 
 export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
   const [hovered, setHovered] = useState(false);
-  const [pinned, setPinned] = useState(false);
+  const [pinned, setPinned] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("sidebar:pinned") === "true";
+  });
+
   const [openMenu, setOpenMenu] = useState<number | null>(null);
 
   const expanded = pinned || hovered;
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("sidebar:pinned", String(pinned));
+    }
+  }, [pinned]);
+
+  useEffect(() => {
+    if (pinned) {
+      setHovered(false);
+    }
+  }, [pinned]);
 
   /* sync sidebar state ke page */
   useEffect(() => {

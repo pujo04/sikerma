@@ -6,9 +6,8 @@ import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
-import { Trash2 } from "lucide-react";
-import { RefreshCcw, Plus, ArrowLeft, Download, List } from "lucide-react";
+import { Download, List, Trash2, Pencil } from "lucide-react";
+import { RefreshCcw, Plus, ArrowLeft, X } from "lucide-react";
 
 /* ================= TYPES ================= */
 
@@ -66,8 +65,8 @@ function StatusBadge({ status }: { status: "Aktif" | "Tidak Aktif" }) {
       className={cn(
         "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
         status === "Aktif"
-          ? "bg-green-100 text-green-700 border border-green-200"
-          : "bg-gray-100 text-gray-600 border border-gray-200",
+          ? "bg-green-600 text-white border border-green-600"
+          : "bg-gray-600 text-white border border-gray-600",
       )}
     >
       {status}
@@ -87,9 +86,9 @@ export default function MyRepositoryPage() {
   const [page, setPage] = useState(1);
 
   const [deleteDoc, setDeleteDoc] = useState<RepositoryDoc | null>(null);
-useEffect(() => {
-  document.title = "SIKERMA - My Repository";
-}, []);
+  useEffect(() => {
+    document.title = "SIKERMA - My Repository";
+  }, []);
 
   const handleDownload = (doc: RepositoryDoc) => {
     alert(`Download dokumen: ${doc.nomor}`);
@@ -178,12 +177,12 @@ useEffect(() => {
                 <table className="w-full text-sm border-t">
                   <thead className="bg-muted/40">
                     <tr>
-                      <th className="px-3 py-2 w-12">No</th>
-                      <th className="px-3 py-2">Jenis</th>
-                      <th className="px-3 py-2">Nomor Dokumen</th>
-                      <th className="px-3 py-2">Judul Kegiatan</th>
-                      <th className="px-3 py-2">Tgl. Mulai</th>
-                      <th className="px-3 py-2">Status</th>
+                      <th className="px-3 py-2 text-center">No</th>
+                      <th className="px-3 py-2 text-center">Jenis</th>
+                      <th className="px-3 py-2 text-center">Nomor Dokumen</th>
+                      <th className="px-3 py-2 text-center">Judul Kegiatan</th>
+                      <th className="px-3 py-2 text-center">Tgl. Mulai</th>
+                      <th className="px-3 py-2 text-center">Status</th>
                       <th className="px-3 py-2 text-center">Action</th>
                     </tr>
                   </thead>
@@ -193,11 +192,11 @@ useEffect(() => {
                         key={item.id}
                         className="border-b hover:bg-muted/40 transition-colors"
                       >
-                        <td className="px-3 py-2">
+                        <td className="px-3 py-2 text-center">
                           {(page - 1) * limit + index + 1}
                         </td>
                         <td className="px-3 py-2 text-center">{item.jenis}</td>
-                        <td className="px-3 py-2">{item.nomor}</td>
+                        <td className="px-3 py-2 text-center">{item.nomor}</td>
                         <td className="px-3 py-2 max-w-xl">{item.judul}</td>
                         <td className="px-3 py-2 text-center">
                           {item.tglMulai}
@@ -225,11 +224,26 @@ useEffect(() => {
                               <List className="w-4 h-4" />
                             </Button>
 
-                            <Link
-                              href={`/kerjasama/repository/edit/${item.id}`}
-                            >
-                              <Button size="sm" variant="outline" title="Edit">
-                                ✏️
+                            <Link href={`/kerjasama/repository/edit/${item.id}`}>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                title="Edit Dokumen"
+                                className="
+      group
+      border-blue-200
+      hover:bg-blue-600 hover:border-blue-600
+      transition-colors
+    "
+                              >
+                                <Pencil
+                                  className="
+        w-4 h-4
+        text-black
+        group-hover:text-white  
+        transition-colors
+      "
+                                />
                               </Button>
                             </Link>
 
@@ -239,19 +253,19 @@ useEffect(() => {
                               title="Hapus Dokumen"
                               onClick={() => setDeleteDoc(item)}
                               className="
-    group
-    border-red-200
-    hover:bg-red-600 hover:border-red-600
-    transition-colors
-  "
+                              group
+                              border-red-200
+                              hover:bg-red-600 hover:border-red-600
+                              transition-colors
+                            "
                             >
                               <Trash2
                                 className="
-      w-4 h-4
-      text-black
-      group-hover:text-white
-      transition-colors
-    "
+                                w-4 h-4
+                                text-black
+                                group-hover:text-white
+                                transition-colors
+                              "
                               />
                             </Button>
                           </div>
@@ -317,9 +331,22 @@ useEffect(() => {
               </h2>
               <button
                 onClick={() => setSelectedDoc(null)}
-                className="text-muted-foreground hover:text-foreground"
+                className="
+    group
+    rounded-sm
+    p-1
+    transition-colors
+    hover:bg-[#0079C4]
+  "
               >
-                ✕
+                <X
+                  className="
+      w-4 h-4
+      text-muted-foreground
+      transition-colors
+      group-hover:text-white
+    "
+                />
               </button>
             </div>
 

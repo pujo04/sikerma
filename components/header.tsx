@@ -3,8 +3,6 @@
 import {
   Menu,
   Grid3x3,
-  Maximize2,
-  Moon,
   User,
   LogOut,
 } from "lucide-react";
@@ -210,14 +208,6 @@ export function Header({ onMenuClick }: HeaderProps) {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <Maximize2 className="w-5 h-5" />
-          </Button>
-
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <Moon className="w-5 h-5" />
-          </Button>
 
           {/* PROFILE */}
           <DropdownMenu>

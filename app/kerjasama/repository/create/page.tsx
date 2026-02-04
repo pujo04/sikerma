@@ -19,9 +19,9 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 /* ================= PAGE ================= */
 export default function CreateRepositoryPage() {
   const router = useRouter();
-useEffect(() => {
-  document.title = "SIKERMA - Repository";
-}, []);
+  useEffect(() => {
+    document.title = "SIKERMA - Repository";
+  }, []);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [statusDokumen, setStatusDokumen] = useState("");
@@ -711,8 +711,23 @@ useEffect(() => {
                 {/* HEADER */}
                 <div className="flex items-center justify-between px-5 py-4 border-b shrink-0">
                   <h3 className="text-sm font-semibold">Penggiat Kerjasama</h3>
-                  <button onClick={() => setOpenPenggiat(false)}>
-                    <X className="w-4 h-4 text-muted-foreground" />
+                  <button onClick={() => setOpenPenggiat(false)}
+                    className="
+                      group
+                      rounded-sm
+                      p-1
+                      transition-colors
+                      hover:bg-[#0079C4]
+                    "
+                  >
+                    <X
+                      className="
+                        w-4 h-4
+                        text-muted-foreground
+                        transition-colors
+                        group-hover:text-white
+                      "
+                    />
                   </button>
                 </div>
 
@@ -785,9 +800,9 @@ useEffect(() => {
                 </div>
 
                 {/* FOOTER */}
-                <div className="flex justify-end gap-2 px-5 py-4 border-t shrink-0">
+                   <div className="flex justify-end gap-2 px-6 py-4 border-t shrink-0 bg-background">
                   <Button
-                    variant="outline"
+                    variant="destructive"
                     size="sm"
                     onClick={() => setOpenPenggiat(false)}
                   >
@@ -804,19 +819,33 @@ useEffect(() => {
             <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
               <div
                 className="
-      bg-white rounded-xl shadow-xl
-      w-full max-w-3xl
-      max-h-[90vh]
-      flex flex-col
-    "
+                bg-white rounded-xl shadow-xl
+                w-full max-w-3xl
+                max-h-[90vh]
+                flex flex-col
+              "
               >
                 {/* HEADER */}
                 <div className="flex items-center justify-between px-5 py-4 border-b shrink-0">
                   <h3 className="text-sm font-semibold">
                     Data Penggiat Kerjasama
                   </h3>
-                  <button onClick={() => setOpenDataPenggiat(false)}>
-                    <X className="w-4 h-4 text-muted-foreground" />
+                  <button onClick={() => setOpenDataPenggiat(false)} className="
+                      group
+                      rounded-sm
+                      p-1
+                      transition-colors
+                      hover:bg-[#0079C4]
+                    "
+                  >
+                    <X
+                      className="
+                        w-4 h-4
+                        text-muted-foreground
+                        transition-colors
+                        group-hover:text-white
+                      "
+                    />
                   </button>
                 </div>
 
@@ -935,9 +964,9 @@ useEffect(() => {
                 </div>
 
                 {/* FOOTER */}
-                <div className="flex justify-end gap-2 px-5 py-4 border-t shrink-0">
+                <div className="flex justify-end gap-2 px-6 py-4 border-t shrink-0 bg-background">
                   <Button
-                    variant="outline"
+                    variant="destructive"
                     size="sm"
                     onClick={() => setOpenDataPenggiat(false)}
                   >
@@ -956,17 +985,31 @@ useEffect(() => {
         <div className="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center p-4">
           <div
             className="
-      bg-white rounded-xl shadow-xl
-      w-full max-w-3xl
-      max-h-[90vh]
-      flex flex-col
-    "
+            bg-white rounded-xl shadow-xl
+            w-full max-w-3xl
+            max-h-[90vh]
+            flex flex-col
+          "
           >
             {/* HEADER */}
             <div className="flex items-center justify-between px-5 py-4 border-b shrink-0">
               <h3 className="text-sm font-semibold">Bentuk Kegiatan</h3>
-              <button onClick={() => setOpenBentukKegiatan(false)}>
-                <X className="w-4 h-4 text-muted-foreground" />
+              <button onClick={() => setOpenBentukKegiatan(false)} className="
+                  group
+                  rounded-sm
+                  p-1
+                  transition-colors
+                  hover:bg-[#0079C4]
+                "
+              >
+                <X
+                  className="
+                    w-4 h-4
+                    text-muted-foreground
+                    transition-colors
+                    group-hover:text-white
+                  "
+                />
               </button>
             </div>
 
@@ -1050,9 +1093,9 @@ useEffect(() => {
             </div>
 
             {/* FOOTER */}
-            <div className="flex justify-end gap-2 px-5 py-4 border-t shrink-0">
+            <div className="flex justify-end gap-2 px-6 py-4 border-t shrink-0 bg-background">
               <Button
-                variant="outline"
+                variant="destructive"
                 size="sm"
                 onClick={() => setOpenBentukKegiatan(false)}
               >

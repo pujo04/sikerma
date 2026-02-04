@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PencairanDana {
+  id            BigInt   @id @default(autoincrement())
+  dasarDokumen  String
+  danaMitra     String
+  jumlah        Decimal  @db.Decimal(15, 2)
+  tanggal       DateTime
+  catatan       String?
+  status        Status
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Status {
+  Draft
+  Diajukan
+  Disetujui
+  Ditolak
+}

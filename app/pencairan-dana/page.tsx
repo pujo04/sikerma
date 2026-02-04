@@ -41,9 +41,148 @@ export default function PencairanDanaPage() {
   document.title = "SIKERMA - Pencairan Dana";
 }, []);
 
+  /* ================= DUMMY ================= */
+  const DUMMY_PENCAIRAN: PencairanDana[] = [
+    {
+      id: 1,
+      dasarDokumen: "MoU Universitas Lampung - Bank Mitra",
+      danaMitra: "Bank Mitra",
+      jumlah: 25000000,
+      tanggal: "2024-01-10",
+      catatan: "Termin 1",
+      status: "Disetujui",
+    },
+    {
+      id: 2,
+      dasarDokumen: "MoA Fakultas Teknik",
+      danaMitra: "PT Teknologi Nusantara",
+      jumlah: 15000000,
+      tanggal: "2024-01-15",
+      catatan: "Pembayaran awal",
+      status: "Diajukan",
+    },
+    {
+      id: 3,
+      dasarDokumen: "IA Penelitian Pertanian",
+      danaMitra: "Kementerian Pertanian",
+      jumlah: 30000000,
+      tanggal: "2024-01-20",
+      catatan: "Termin 1",
+      status: "Disetujui",
+    },
+    {
+      id: 4,
+      dasarDokumen: "MoU Kerjasama Industri",
+      danaMitra: "PT Industri Jaya",
+      jumlah: 20000000,
+      tanggal: "2024-01-25",
+      catatan: "Dana operasional",
+      status: "Draft",
+    },
+    {
+      id: 5,
+      dasarDokumen: "MoA Program Magang",
+      danaMitra: "PT Mitra Karya",
+      jumlah: 40000000,
+      tanggal: "2024-02-01",
+      catatan: "Termin 1",
+      status: "Diajukan",
+    },
+    {
+      id: 6,
+      dasarDokumen: "IA Pengabdian Masyarakat",
+      danaMitra: "Pemda Lampung",
+      jumlah: 12000000,
+      tanggal: "2024-02-05",
+      catatan: "Dana kegiatan",
+      status: "Disetujui",
+    },
+    {
+      id: 7,
+      dasarDokumen: "MoU Beasiswa Pendidikan",
+      danaMitra: "Yayasan Pendidikan",
+      jumlah: 18000000,
+      tanggal: "2024-02-10",
+      catatan: "Tahap awal",
+      status: "Disetujui",
+    },
+    {
+      id: 8,
+      dasarDokumen: "MoA Pelatihan Digital",
+      danaMitra: "PT Digital Solusi",
+      jumlah: 10000000,
+      tanggal: "2024-02-15",
+      catatan: "Pelatihan batch 1",
+      status: "Diajukan",
+    },
+    {
+      id: 9,
+      dasarDokumen: "IA Riset Energi",
+      danaMitra: "BRIN",
+      jumlah: 35000000,
+      tanggal: "2024-02-20",
+      catatan: "Termin riset",
+      status: "Disetujui",
+    },
+    {
+      id: 10,
+      dasarDokumen: "MoU Kerjasama Internasional",
+      danaMitra: "Universitas Luar Negeri",
+      jumlah: 50000000,
+      tanggal: "2024-02-25",
+      catatan: "Pendanaan awal",
+      status: "Draft",
+    },
+    {
+      id: 11,
+      dasarDokumen: "MoA Dosen Praktisi",
+      danaMitra: "Perusahaan Nasional",
+      jumlah: 22000000,
+      tanggal: "2024-03-01",
+      catatan: "Honorarium",
+      status: "Disetujui",
+    },
+    {
+      id: 12,
+      dasarDokumen: "IA Sistem Informasi",
+      danaMitra: "UPT TIK",
+      jumlah: 8000000,
+      tanggal: "2024-03-05",
+      catatan: "Pengembangan sistem",
+      status: "Ditolak",
+    },
+    {
+      id: 13,
+      dasarDokumen: "MoU Riset Multidisiplin",
+      danaMitra: "Konsorsium Riset",
+      jumlah: 45000000,
+      tanggal: "2024-03-10",
+      catatan: "Termin 2",
+      status: "Diajukan",
+    },
+    {
+      id: 14,
+      dasarDokumen: "MoA Sertifikasi Mahasiswa",
+      danaMitra: "Lembaga Sertifikasi",
+      jumlah: 17000000,
+      tanggal: "2024-03-15",
+      catatan: "Biaya sertifikasi",
+      status: "Disetujui",
+    },
+    {
+      id: 15,
+      dasarDokumen: "IA Workshop Proposal Hibah",
+      danaMitra: "Direktorat Dikti",
+      jumlah: 9000000,
+      tanggal: "2024-03-20",
+      catatan: "Dana pelatihan",
+      status: "Draft",
+    },
+  ];
+
   /* ================= DATA ================= */
 
-  const [pencairanData, setPencairanData] = useState<PencairanDana[]>([]);
+  const [pencairanData, setPencairanData] = useState<PencairanDana[]>(DUMMY_PENCAIRAN);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
@@ -65,10 +204,12 @@ export default function PencairanDanaPage() {
   /* ================= FILTER ================= */
 
   const filteredData = useMemo(() => {
+    const keyword = search.toLowerCase();
+
     return pencairanData.filter((item) =>
-      `${item.dasarDokumen} ${item.status}`
+      `${item.dasarDokumen} ${item.danaMitra} ${item.status} ${item.catatan}`
         .toLowerCase()
-        .includes(search.toLowerCase())
+        .includes(keyword)
     );
   }, [search, pencairanData]);
 
@@ -89,6 +230,12 @@ export default function PencairanDanaPage() {
     filteredData.length === 0 ? 0 : (page - 1) * limit + 1;
   const endEntry = Math.min(page * limit, filteredData.length);
 
+  const getPageNumbers = () => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    return [1, 2, 3, "...", totalPages];
+  };
   /* ================= UI ================= */
 
   return (
@@ -157,13 +304,13 @@ export default function PencairanDanaPage() {
               <table className="w-full text-sm border-t">
                 <thead className="bg-muted/40">
                   <tr>
-                    <th className="px-3 py-2">No</th>
-                    <th className="px-3 py-2">Dasar Dokumen</th>
-                    <th className="px-3 py-2">Dana Mitra</th>
-                    <th className="px-3 py-2 text-right">Jumlah</th>
-                    <th className="px-3 py-2">Tanggal</th>
-                    <th className="px-3 py-2">Catatan</th>
-                    <th className="px-3 py-2">Status</th>
+                    <th className="px-3 py-2 text-center">No</th>
+                    <th className="px-3 py-2 text-center">Dasar Dokumen</th>
+                    <th className="px-3 py-2 text-center">Dana Mitra</th>
+                    <th className="px-3 py-2 text-center">Jumlah</th>
+                    <th className="px-3 py-2 text-center">Tanggal</th>
+                    <th className="px-3 py-2 text-center">Catatan</th>
+                    <th className="px-3 py-2 text-center">Status</th>
                     <th className="px-3 py-2 text-center">Action</th>
                   </tr>
                 </thead>
@@ -181,17 +328,27 @@ export default function PencairanDanaPage() {
                   ) : (
                     paginatedData.map((item, i) => (
                       <tr key={item.id} className="border-b">
-                        <td className="px-3 py-2">
+                        <td className="px-3 py-2 text-center">
                           {(page - 1) * limit + i + 1}
                         </td>
-                        <td className="px-3 py-2">{item.dasarDokumen}</td>
-                        <td className="px-3 py-2">{item.danaMitra}</td>
-                        <td className="px-3 py-2 text-right">
+                        <td className="px-3 py-2 text-center">
+                          {item.dasarDokumen}
+                        </td>
+                        <td className="px-3 py-2 text-center">
+                          {item.danaMitra}
+                        </td>
+                        <td className="px-3 py-2 text-center">
                           Rp {item.jumlah.toLocaleString("id-ID")}
                         </td>
-                        <td className="px-3 py-2">{item.tanggal}</td>
-                        <td className="px-3 py-2">{item.catatan}</td>
-                        <td className="px-3 py-2">{item.status}</td>
+                        <td className="px-3 py-2 text-center">
+                          {item.tanggal}
+                        </td>
+                        <td className="px-3 py-2 text-center">
+                          {item.catatan}
+                        </td>
+                        <td className="px-3 py-2 text-center">
+                          <StatusBadge status={item.status} />
+                        </td>
                         <td className="px-3 py-2 text-center flex gap-1 justify-center">
                           <Button size="sm" variant="outline">
                             <Eye className="w-4 h-4" />
@@ -199,8 +356,25 @@ export default function PencairanDanaPage() {
                           <Button size="sm" variant="outline">
                             <Pencil className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="destructive">
-                            <Trash2 className="w-4 h-4" />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Hapus Dokumen"
+                            className="
+                              group
+                              border-red-200
+                              hover:bg-red-600 hover:border-red-600
+                              transition-colors
+                            "
+                          >
+                            <Trash2
+                              className="
+                                w-4 h-4
+                                text-black
+                                group-hover:text-white
+                                transition-colors
+                              "
+                            />
                           </Button>
                         </td>
                       </tr>
@@ -216,7 +390,7 @@ export default function PencairanDanaPage() {
                   {filteredData.length} entries
                 </span>
 
-                <div className="flex gap-1">
+                <div className="flex items-center gap-1">
                   <Button
                     size="sm"
                     variant="outline"
@@ -225,6 +399,23 @@ export default function PencairanDanaPage() {
                   >
                     Previous
                   </Button>
+
+                  {getPageNumbers().map((p, i) =>
+                    p === "..." ? (
+                      <span key={i} className="px-2 text-muted-foreground">
+                        ...
+                      </span>
+                    ) : (
+                      <Button
+                        key={i}
+                        size="sm"
+                        variant={p === page ? "default" : "outline"}
+                        onClick={() => setPage(p)}
+                      >
+                        {p}
+                      </Button>
+                    )
+                  )}
 
                   <Button
                     size="sm"
@@ -408,9 +599,23 @@ function Modal({
         {/* ================= HEADER (FIXED) ================= */}
         <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
           <h3 className="text-sm font-semibold">Add Pencairan Dana</h3>
-          <button onClick={onClose}>
-            <X className="w-4 h-4 text-muted-foreground" />
-          </button>
+          <button onClick={onClose} className="
+              group
+              rounded-sm
+              p-1
+              transition-colors
+              hover:bg-[#0079C4]
+            "
+                        >
+                          <X
+                            className="
+                w-4 h-4
+                text-muted-foreground
+                transition-colors
+                group-hover:text-white
+              "
+                          />
+                        </button>
         </div>
 
         {/* ================= BODY (SCROLLABLE) ================= */}
@@ -553,5 +758,23 @@ function SuccessModal({ onClose }: any) {
         <Button onClick={onClose}>OK</Button>
       </div>
     </div>
+  );
+}
+
+function StatusBadge({ status }: { status: PencairanDana["status"] }) {
+  const base =
+    "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium";
+
+  const variants: Record<PencairanDana["status"], string> = {
+    Draft: "bg-gray-600 text-white",
+    Diajukan: "bg-blue-600 text-white",
+    Disetujui: "bg-green-600 text-white",
+    Ditolak: "bg-red-600 text-white",
+  };
+
+  return (
+    <span className={`${base} ${variants[status]}`}>
+      {status}
+    </span>
   );
 }

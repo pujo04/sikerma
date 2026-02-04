@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import {
   RefreshCcw,
   Plus,
@@ -193,21 +194,23 @@ const DUMMY_REALISASI: RealisasiKegiatan[] = [
   },
 ];
 
+const DOKUMEN_OPTIONS = ["MoU", "MoA", "IA"];
+const BENTUK_OPTIONS = ["Workshop", "Seminar", "Pelatihan", "Penelitian"];
 /* ================= PAGE ================= */
 
 export default function RealisasiKegiatanPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
-
+ const [deleteRealisasi, setDeleteRealisasi] = useState<RealisasiDoc | null>(null);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
   const [fileRealisasi, setFileRealisasi] = useState<File | null>(null);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
-useEffect(() => {
-  document.title = "SIKERMA - Realisasi Kegiatan";
-}, []);
+  useEffect(() => {
+    document.title = "SIKERMA - Realisasi Kegiatan";
+  }, []);
 
   const [newRealisasi, setNewRealisasi] = useState({
     dokumen: "",
@@ -285,6 +288,7 @@ useEffect(() => {
                     variant="outline"
                     onClick={() => setShowAddModal(true)}
                   >
+                    <Plus className="w-4 h-4 mr-1" />
                     Add
                   </Button>
                 </div>
@@ -324,12 +328,12 @@ useEffect(() => {
                   <table className="w-full text-sm border-t">
                     <thead className="bg-muted/40">
                       <tr>
-                        <th className="px-3 py-2 w-[60px]">No</th>
-                        <th className="px-3 py-2">Dokumen</th>
-                        <th className="px-3 py-2">Judul Kegiatan</th>
-                        <th className="px-3 py-2">Peserta</th>
-                        <th className="px-3 py-2">Tgl Kegiatan</th>
-                        <th className="px-3 py-2 text-right">Anggaran</th>
+                        <th className="px-3 py-2 w-[60px] text-center">No</th>
+                        <th className="px-3 py-2 text-center">Dokumen</th>
+                        <th className="px-3 py-2 text-center">Judul Kegiatan</th>
+                        <th className="px-3 py-2 text-center">Peserta</th>
+                        <th className="px-3 py-2 text-center">Tgl Kegiatan</th>
+                        <th className="px-3 py-2 text-center">Anggaran</th>
                         <th className="px-3 py-2 text-center">Action</th>
                       </tr>
                     </thead>
@@ -347,14 +351,14 @@ useEffect(() => {
                       ) : (
                         paginatedData.map((item, index) => (
                           <tr key={item.id} className="border-b">
-                            <td className="px-3 py-2">
+                            <td className="px-3 py-2 text-center">
                               {(page - 1) * limit + index + 1}
                             </td>
-                            <td className="px-3 py-2">{item.dokumen}</td>
-                            <td className="px-3 py-2">{item.judul}</td>
-                            <td className="px-3 py-2">{item.peserta}</td>
-                            <td className="px-3 py-2">{item.tanggal}</td>
-                            <td className="px-3 py-2 text-right">
+                            <td className="px-3 py-2 text-center">{item.dokumen}</td>
+                            <td className="px-3 py-2 text-center">{item.judul}</td>
+                            <td className="px-3 py-2 text-center">{item.peserta}</td>
+                            <td className="px-3 py-2 text-center">{item.tanggal}</td>
+                            <td className="px-3 py-2 text-center">
                               Rp {item.anggaran.toLocaleString("id-ID")}
                             </td>
                             <td className="px-3 py-2 text-center flex gap-1 justify-center">
@@ -364,8 +368,26 @@ useEffect(() => {
                               <Button size="sm" variant="outline">
                                 <Pencil className="w-4 h-4" />
                               </Button>
-                              <Button size="sm" variant="destructive">
-                                <Trash2 className="w-4 h-4" />
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                title="Hapus Dokumen"
+                                onClick={() => setDeleteRealisasi(item)}
+                                className="
+    group
+    border-red-200
+    hover:bg-red-600 hover:border-red-600
+    transition-colors
+  "
+                              >
+                                <Trash2
+                                  className="
+      w-4 h-4
+      text-black
+      group-hover:text-white
+      transition-colors
+    "
+                                />
                               </Button>
                             </td>
                           </tr>
@@ -427,68 +449,64 @@ useEffect(() => {
       {/* ================= MODAL ADD REALISASI ================= */}
       {showAddModal && (
         <div className="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
-          <div
-            className="
-        bg-white rounded-2xl shadow-xl
-        w-full max-w-4xl
-        max-h-[85vh]
-        flex flex-col
-      "
-          >
+        <div
+  className="
+    bg-white rounded-2xl shadow-xl
+    w-full max-w-4xl
+    h-[85vh]
+    flex flex-col
+  "
+>
             {/* HEADER */}
             <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
               <h2 className="text-base font-semibold">Tambah Realisasi</h2>
               <button
-                onClick={() => setShowAddModal(false)}
-                className="text-muted-foreground hover:text-foreground"
+                onClick={() => setShowAddModal(false)} className="
+    group
+    rounded-sm
+    p-1
+    transition-colors
+    hover:bg-[#0079C4]
+  "
               >
-                ✕
+                <X
+                  className="
+      w-4 h-4
+      text-muted-foreground
+      transition-colors
+      group-hover:text-white
+    "
+                />
               </button>
             </div>
 
             {/* BODY (SCROLLABLE) */}
-            <div className="px-6 py-4 text-sm overflow-y-auto space-y-4">
-              {/* Dokumen Kerjasama */}
-              <div className="space-y-1">
-                <label className="font-medium text-muted-foreground">
-                  Dokumen Kerjasama <span className="text-red-500">*</span>
-                </label>
-                <select
-                  className="w-full rounded-md border px-3 py-2"
-                  value={newRealisasi.dokumen}
-                  onChange={(e) =>
-                    setNewRealisasi({
-                      ...newRealisasi,
-                      dokumen: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">- Pilih -</option>
-                  <option value="MoU">MoU</option>
-                  <option value="MoA">MoA</option>
-                  <option value="IA">IA</option>
-                </select>
-              </div>
+<div className="flex-1 overflow-y-auto px-6 py-4 text-sm space-y-4">
+  <SearchableSelect
+    label="Dokumen Kerjasama"
+    size="xs"
+    options={DOKUMEN_OPTIONS}
+    value={newRealisasi.dokumen}
+    onChange={(value) =>
+      setNewRealisasi({
+        ...newRealisasi,
+        dokumen: value,
+      })
+    }
+  />
 
-              {/* Bentuk Kegiatan */}
-              <div className="space-y-1">
-                <label className="font-medium text-muted-foreground">
-                  Bentuk Kegiatan <span className="text-red-500">*</span>
-                </label>
-                <select
-                  className="w-full rounded-md border px-3 py-2"
-                  value={newRealisasi.bentuk}
-                  onChange={(e) =>
-                    setNewRealisasi({ ...newRealisasi, bentuk: e.target.value })
-                  }
-                >
-                  <option value="">- Pilih -</option>
-                  <option value="Workshop">Workshop</option>
-                  <option value="Seminar">Seminar</option>
-                  <option value="Pelatihan">Pelatihan</option>
-                  <option value="Penelitian">Penelitian</option>
-                </select>
-              </div>
+  <SearchableSelect
+    label="Bentuk Kegiatan"
+    size="xs"
+    options={BENTUK_OPTIONS}
+    value={newRealisasi.bentuk}
+    onChange={(value) =>
+      setNewRealisasi({
+        ...newRealisasi,
+        bentuk: value,
+      })
+    }
+  />
 
               {/* Judul */}
               <div className="space-y-1">
