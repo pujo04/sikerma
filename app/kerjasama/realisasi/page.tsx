@@ -6,214 +6,95 @@ import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { CloseButton } from "@/components/ui/close-button";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import {
   RefreshCcw,
   Plus,
   ArrowLeft,
-  Eye,
+  Download,
   Pencil,
   Trash2,
   X,
+  Eye,
+  Loader2,
 } from "lucide-react";
 
 /* ================= TYPES ================= */
 
 type RealisasiKegiatan = {
   id: number;
+  repositoryId?: string
   dokumen: string;
   judul: string;
   peserta: string;
   tanggal: string;
   anggaran: number;
+  bentuk?: string
+  dosen?: string
+  mahasiswa?: string
+  hasil?: string
+  dokumenFile?: any[]
 };
 
-/* ================= DUMMY DATA ================= */
-/* Kosongkan array jika ingin tampil "No data available" */
-
-const DUMMY_REALISASI: RealisasiKegiatan[] = [
-  {
-    id: 1,
-    dokumen: "MoU",
-    judul: "Workshop Implementasi Kerjasama Akademik",
-    peserta: "Universitas Lampung",
-    tanggal: "12-09-2023",
-    anggaran: 25000000,
-  },
-  {
-    id: 2,
-    dokumen: "MoA",
-    judul: "Pelatihan Pengembangan SDM",
-    peserta: "Fakultas Teknik",
-    tanggal: "20-09-2023",
-    anggaran: 15000000,
-  },
-  {
-    id: 3,
-    dokumen: "IA",
-    judul: "Penelitian Kolaboratif Pertanian",
-    peserta: "Fakultas Pertanian",
-    tanggal: "25-09-2023",
-    anggaran: 30000000,
-  },
-  {
-    id: 4,
-    dokumen: "MoU",
-    judul: "Seminar Nasional Kerjasama Pendidikan",
-    peserta: "LPPM Unila",
-    tanggal: "01-10-2023",
-    anggaran: 20000000,
-  },
-  {
-    id: 5,
-    dokumen: "MoA",
-    judul: "Program Magang Industri",
-    peserta: "Mitra Industri",
-    tanggal: "05-10-2023",
-    anggaran: 40000000,
-  },
-  {
-    id: 6,
-    dokumen: "IA",
-    judul: "Pengabdian Masyarakat Desa Binaan",
-    peserta: "Fakultas Ekonomi",
-    tanggal: "10-10-2023",
-    anggaran: 12000000,
-  },
-  {
-    id: 7,
-    dokumen: "MoU",
-    judul: "Kerjasama Penyelenggaraan Beasiswa",
-    peserta: "Bank Mitra",
-    tanggal: "15-10-2023",
-    anggaran: 18000000,
-  },
-  {
-    id: 8,
-    dokumen: "MoA",
-    judul: "Pelatihan Digital Marketing",
-    peserta: "UMKM Binaan",
-    tanggal: "18-10-2023",
-    anggaran: 10000000,
-  },
-  {
-    id: 9,
-    dokumen: "IA",
-    judul: "Riset Energi Terbarukan",
-    peserta: "Fakultas MIPA",
-    tanggal: "22-10-2023",
-    anggaran: 35000000,
-  },
-  {
-    id: 10,
-    dokumen: "MoU",
-    judul: "Kerjasama Internasional Pendidikan",
-    peserta: "Universitas Luar Negeri",
-    tanggal: "25-10-2023",
-    anggaran: 50000000,
-  },
-  {
-    id: 11,
-    dokumen: "MoA",
-    judul: "Program Dosen Praktisi",
-    peserta: "Perusahaan Nasional",
-    tanggal: "30-10-2023",
-    anggaran: 22000000,
-  },
-  {
-    id: 12,
-    dokumen: "IA",
-    judul: "Pelatihan Sistem Informasi",
-    peserta: "UPT TIK",
-    tanggal: "02-11-2023",
-    anggaran: 8000000,
-  },
-  {
-    id: 13,
-    dokumen: "MoU",
-    judul: "Kerjasama Penelitian Multidisiplin",
-    peserta: "Konsorsium Riset",
-    tanggal: "05-11-2023",
-    anggaran: 45000000,
-  },
-  {
-    id: 14,
-    dokumen: "MoA",
-    judul: "Program Sertifikasi Mahasiswa",
-    peserta: "Lembaga Sertifikasi",
-    tanggal: "08-11-2023",
-    anggaran: 17000000,
-  },
-  {
-    id: 15,
-    dokumen: "IA",
-    judul: "Workshop Penulisan Proposal Hibah",
-    peserta: "Dosen Unila",
-    tanggal: "12-11-2023",
-    anggaran: 9000000,
-  },
-  {
-    id: 16,
-    dokumen: "MoU",
-    judul: "Kerjasama Pengembangan Kurikulum",
-    peserta: "Asosiasi Profesi",
-    tanggal: "15-11-2023",
-    anggaran: 26000000,
-  },
-  {
-    id: 17,
-    dokumen: "MoA",
-    judul: "Program Teaching Factory",
-    peserta: "SMK Mitra",
-    tanggal: "18-11-2023",
-    anggaran: 14000000,
-  },
-  {
-    id: 18,
-    dokumen: "IA",
-    judul: "Pelatihan Keamanan Sistem Informasi",
-    peserta: "Fakultas Ilmu Komputer",
-    tanggal: "22-11-2023",
-    anggaran: 16000000,
-  },
-  {
-    id: 19,
-    dokumen: "MoU",
-    judul: "Kerjasama Penyelenggaraan Event Akademik",
-    peserta: "Event Organizer",
-    tanggal: "25-11-2023",
-    anggaran: 21000000,
-  },
-  {
-    id: 20,
-    dokumen: "MoA",
-    judul: "Program Inkubasi Startup",
-    peserta: "Inkubator Bisnis",
-    tanggal: "30-11-2023",
-    anggaran: 38000000,
-  },
-];
-
-const DOKUMEN_OPTIONS = ["MoU", "MoA", "IA"];
-const BENTUK_OPTIONS = ["Workshop", "Seminar", "Pelatihan", "Penelitian"];
 /* ================= PAGE ================= */
 
 export default function RealisasiKegiatanPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
- const [deleteRealisasi, setDeleteRealisasi] = useState<RealisasiDoc | null>(null);
+  const [deleteRealisasi, setDeleteRealisasi] = useState<any>(null);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
   const [fileRealisasi, setFileRealisasi] = useState<File | null>(null);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
+  const [existingDokumen, setExistingDokumen] = useState<any[]>([])
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [repoOptions, setRepoOptions] = useState<any[]>([])
+  const [bentukOptions, setBentukOptions] = useState<string[]>([])
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [showSuccessAdd, setShowSuccessAdd] = useState(false)
+  const [showErrorAdd, setShowErrorAdd] = useState(false)
+  const [showSuccessUpdate, setShowSuccessUpdate] = useState(false)
+  const [showErrorUpdate, setShowErrorUpdate] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const fetchBentukKegiatan = async (repositoryId: string) => {
+    if (!repositoryId) return
+    const res = await fetch(
+      "/api/repository/" + repositoryId + "/bentuk-kegiatan"
+    )
+    const list = await res.json()
+
+    if (!Array.isArray(list)) {
+      setBentukOptions([])
+      return
+    }
+
+    setBentukOptions(
+      list.map((b: any) => b.bentuk)
+    )
+  }
+
+  useEffect(() => {
+    fetchRepository()
+  }, [])
+
+  const fetchRepository = async () => {
+    const res = await fetch("/api/repository/mydata", {
+      credentials: "include"
+    })
+    const list = await res.json()
+    setRepoOptions(list)
+  }
+
   useEffect(() => {
     document.title = "SIKERMA - Realisasi Kegiatan";
   }, []);
 
   const [newRealisasi, setNewRealisasi] = useState({
-    dokumen: "",
+    repositoryId: "",
     bentuk: "",
     judul: "",
     tanggal: "",
@@ -221,18 +102,88 @@ export default function RealisasiKegiatanPage() {
     dosen: "",
     mahasiswa: "",
     hasil: "",
-    file: null as File | null,
+    file: null as File | null
   });
 
   /* ================= FILTER ================= */
 
+  const [data, setData] = useState<RealisasiKegiatan[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const filteredData = useMemo(() => {
-    return DUMMY_REALISASI.filter((item) =>
+    return data.filter((item) =>
       `${item.dokumen} ${item.judul} ${item.peserta}`
         .toLowerCase()
         .includes(search.toLowerCase()),
     );
-  }, [search]);
+  }, [search, data]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+
+      const res = await fetch("/api/realisasi");
+
+      const json = await res.json();
+
+      if (!Array.isArray(json)) {
+        console.error("API response bukan array:", json);
+        setData([]);
+        return;
+      }
+
+      const mapped = json.map((r: any) => ({
+        id: Number(r.id),
+        repositoryId: r.repositoryId?.toString() || "",
+
+        dokumen: r.repository?.jenisDokumen,
+        judul: r.judulKegiatan,
+        peserta: r.repository?.mitra?.namaMitra || "-",
+
+        tanggal: r.tanggalKegiatan,
+        anggaran: Number(r.anggaran || 0),
+
+        bentuk: r.bentukKegiatan,
+        dosen: r.jumlahDosen?.toString(),
+        mahasiswa: r.jumlahMahasiswa?.toString(),
+        hasil: r.hasilKegiatan,
+
+        dokumenFile: r.dokumen || []
+      }));
+
+      setData(mapped);
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteRealisasi) return;
+
+    try {
+      const res = await fetch(`/api/realisasi/${deleteRealisasi.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Gagal hapus data");
+
+      // Optimistic update — hapus dari state langsung
+      setData((prev) => prev.filter((r) => r.id !== deleteRealisasi.id));
+
+      setDeleteRealisasi(null);
+
+      // Sync di background
+      fetchData();
+    } catch (err) {
+      alert("Gagal menghapus data");
+    }
+  };
 
   const totalPages = Math.ceil(filteredData.length / limit);
 
@@ -286,7 +237,23 @@ export default function RealisasiKegiatanPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => setShowAddModal(true)}
+                    onClick={() => {
+                      setEditingId(null)
+
+                      setNewRealisasi({
+                        repositoryId: "",
+                        bentuk: "",
+                        judul: "",
+                        tanggal: "",
+                        anggaran: "",
+                        dosen: "",
+                        mahasiswa: "",
+                        hasil: "",
+                        file: null
+                      })
+
+                      setShowAddModal(true)
+                    }}
                   >
                     <Plus className="w-4 h-4 mr-1" />
                     Add
@@ -339,7 +306,16 @@ export default function RealisasiKegiatanPage() {
                     </thead>
 
                     <tbody>
-                      {paginatedData.length === 0 ? (
+                      {loading ? (
+                        <tr>
+                          <td colSpan={7} className="py-10 text-center">
+                            <div className="flex flex-col items-center gap-2">
+                              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                              <p className="text-sm text-muted-foreground">Memuat data...</p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : paginatedData.length === 0 ? (
                         <tr>
                           <td
                             colSpan={7}
@@ -356,17 +332,48 @@ export default function RealisasiKegiatanPage() {
                             </td>
                             <td className="px-3 py-2 text-center">{item.dokumen}</td>
                             <td className="px-3 py-2 text-center">{item.judul}</td>
-                            <td className="px-3 py-2 text-center">{item.peserta}</td>
-                            <td className="px-3 py-2 text-center">{item.tanggal}</td>
+                            <td className="px-3 py-2 text-center">
+                              <div>Dosen : {item.dosen}</div>
+                              <div>Mahasiswa : {item.mahasiswa}</div>
+                            </td>
+                            <td className="px-3 py-2 text-center">
+                              {new Date(item.tanggal).toLocaleDateString("id-ID")}
+                            </td>
                             <td className="px-3 py-2 text-center">
                               Rp {item.anggaran.toLocaleString("id-ID")}
                             </td>
                             <td className="px-3 py-2 text-center flex gap-1 justify-center">
                               <Button size="sm" variant="outline">
-                                <Eye className="w-4 h-4" />
+                                <Download className="w-4 h-4" />
                               </Button>
-                              <Button size="sm" variant="outline">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+
+                                  setEditingId(item.id)
+
+                                  setShowAddModal(true)
+
+                                  setNewRealisasi({
+                                    repositoryId: item.repositoryId || "",
+                                    bentuk: item.bentuk || "",
+                                    judul: item.judul,
+                                    tanggal: item.tanggal,
+                                    anggaran: item.anggaran.toString(),
+                                    dosen: item.dosen || "",
+                                    mahasiswa: item.mahasiswa || "",
+                                    hasil: item.hasil || "",
+                                    file: null
+                                  })
+
+                                  setExistingDokumen(item.dokumenFile || [])
+
+                                }}
+                              >
+
                                 <Pencil className="w-4 h-4" />
+
                               </Button>
                               <Button
                                 size="sm"
@@ -449,64 +456,62 @@ export default function RealisasiKegiatanPage() {
       {/* ================= MODAL ADD REALISASI ================= */}
       {showAddModal && (
         <div className="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
-        <div
-  className="
+          <div
+            className="
     bg-white rounded-2xl shadow-xl
     w-full max-w-4xl
     h-[85vh]
     flex flex-col
   "
->
+          >
             {/* HEADER */}
             <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
-              <h2 className="text-base font-semibold">Tambah Realisasi</h2>
-              <button
-                onClick={() => setShowAddModal(false)} className="
-    group
-    rounded-sm
-    p-1
-    transition-colors
-    hover:bg-[#0079C4]
-  "
-              >
-                <X
-                  className="
-      w-4 h-4
-      text-muted-foreground
-      transition-colors
-      group-hover:text-white
-    "
-                />
-              </button>
+              <h2 className="text-base font-semibold">
+                {editingId ? "Edit Realisasi" : "Tambah Realisasi"}
+              </h2>
+              <CloseButton onClick={() => setShowAddModal(false)} />
             </div>
 
             {/* BODY (SCROLLABLE) */}
-<div className="flex-1 overflow-y-auto px-6 py-4 text-sm space-y-4">
-  <SearchableSelect
-    label="Dokumen Kerjasama"
-    size="xs"
-    options={DOKUMEN_OPTIONS}
-    value={newRealisasi.dokumen}
-    onChange={(value) =>
-      setNewRealisasi({
-        ...newRealisasi,
-        dokumen: value,
-      })
-    }
-  />
+            <div className="flex-1 overflow-y-auto px-6 py-4 text-sm space-y-4">
+              <SearchableSelect
+                label="Dokumen Kerjasama"
+                size="xs"
 
-  <SearchableSelect
-    label="Bentuk Kegiatan"
-    size="xs"
-    options={BENTUK_OPTIONS}
-    value={newRealisasi.bentuk}
-    onChange={(value) =>
-      setNewRealisasi({
-        ...newRealisasi,
-        bentuk: value,
-      })
-    }
-  />
+                options={repoOptions.map((r: any) => ({
+                  label:
+                    r.nomorDokumen +
+                    " — " +
+                    r.judulKerjasama,
+
+                  value: r.id.toString()
+                }))}
+
+                value={newRealisasi.repositoryId}
+
+                onChange={(value) => {
+                  setNewRealisasi({
+                    ...newRealisasi,
+                    repositoryId: value as string,
+                    bentuk: ""
+                  })
+                  fetchBentukKegiatan(value as string)
+                }}
+              />
+
+              <SearchableSelect
+                label="Bentuk Kegiatan"
+                size="xs"
+                options={bentukOptions}
+                value={newRealisasi.bentuk}
+                disabled={!newRealisasi.repositoryId}
+                onChange={(value) =>
+                  setNewRealisasi({
+                    ...newRealisasi,
+                    bentuk: value as string
+                  })
+                }
+              />
 
               {/* Judul */}
               <div className="space-y-1">
@@ -681,6 +686,18 @@ export default function RealisasiKegiatanPage() {
                 </div>
 
                 <p className="text-xs text-red-500">* file PDF maks 5 MB</p>
+
+                {existingDokumen
+                  .filter((d: any) => d.filePath)
+                  .map((d: any) => (
+                    <div
+                      key={d.id}
+                      className="text-sm text-blue-600 underline cursor-pointer mt-2"
+                      onClick={() => setPreviewUrl(d.filePath)}
+                    >
+                      Lihat Dokumen Lama
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -694,12 +711,83 @@ export default function RealisasiKegiatanPage() {
               </Button>
               <Button
                 variant="default"
-                onClick={() => {
-                  console.log("DATA REALISASI:", {
-                    ...newRealisasi,
-                    file: fileRealisasi,
-                  });
-                  setShowAddModal(false);
+                onClick={async () => {
+
+                  try {
+
+                    // VALIDASI hanya saat tambah
+                    if (!editingId) {
+
+                      if (
+                        !newRealisasi.repositoryId ||
+                        !newRealisasi.bentuk ||
+                        !newRealisasi.judul ||
+                        !newRealisasi.tanggal ||
+                        !newRealisasi.anggaran ||
+                        !newRealisasi.dosen ||
+                        !newRealisasi.mahasiswa ||
+                        !newRealisasi.hasil
+                      ) {
+
+                        setErrorMessage("Semua field wajib diisi")
+                        setShowErrorAdd(true)
+                        return
+
+                      }
+
+                    }
+
+                    const method = editingId ? "PUT" : "POST"
+
+                    const url = editingId
+                      ? `/api/realisasi/${editingId}`
+                      : `/api/realisasi`
+
+                    const res = await fetch(url, {
+                      method,
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(newRealisasi),
+                    })
+
+                    if (!res.ok) throw new Error()
+
+                    // Optimistic update — langsung update state tanpa fetch ulang
+                    const optimisticItem: RealisasiKegiatan = {
+                      id: editingId ? Number(editingId) : Date.now(),
+                      repositoryId: newRealisasi.repositoryId,
+                      judul: newRealisasi.judul,
+                      tanggal: newRealisasi.tanggal,
+                      anggaran: Number(newRealisasi.anggaran) || 0,
+                      bentuk: newRealisasi.bentuk,
+                      dosen: newRealisasi.dosen,
+                      mahasiswa: newRealisasi.mahasiswa,
+                      hasil: newRealisasi.hasil,
+                      dokumenFile: [],
+                      dokumen: "",
+                      peserta: "",
+                    }
+
+                    if (editingId) {
+                      setData((prev) => prev.map((r) => r.id === Number(editingId) ? { ...r, ...optimisticItem } : r))
+                      setShowSuccessUpdate(true)
+                    } else {
+                      setData((prev) => [optimisticItem, ...prev])
+                      setShowSuccessAdd(true)
+                    }
+
+                    setShowAddModal(false)
+
+                    // Sync data di background
+                    fetchData()
+
+                  } catch (err) {
+                    if (editingId) {
+                      setShowErrorUpdate(true)
+                    } else {
+                      setShowErrorAdd(true)
+                    }
+                  }
+
                 }}
               >
                 Save
@@ -729,6 +817,123 @@ export default function RealisasiKegiatanPage() {
           </div>
         </div>
       )}
+
+      {previewUrl && (
+
+        <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
+
+          <div className="bg-white rounded-xl w-full max-w-4xl h-[80vh] flex flex-col shadow-xl">
+
+            <div className="flex items-center justify-between px-4 py-3 border-b">
+
+              <h3 className="text-sm font-semibold">
+                Preview Dokumen Lama
+              </h3>
+
+              <button
+                onClick={() => setPreviewUrl(null)}
+              >
+
+                <X className="w-5 h-5" />
+
+              </button>
+
+            </div>
+
+            <iframe
+              src={previewUrl}
+              className="w-full flex-1"
+            />
+
+          </div>
+
+        </div>
+
+      )}
+
+      {deleteRealisasi && (
+        <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center space-y-4 shadow-lg">
+
+            <div className="flex justify-center">
+              <Trash2 className="w-10 h-10 text-red-600" />
+            </div>
+
+            <p className="text-base font-medium text-red-600">
+              Hapus Data
+            </p>
+
+            <p className="text-sm text-muted-foreground">
+              Apakah kamu yakin ingin menghapus kegiatan
+              <b className="mx-1">{deleteRealisasi.judul}</b>?
+            </p>
+
+            <div className="flex justify-center gap-2">
+
+              <Button
+                variant="outline"
+                onClick={() => setDeleteRealisasi(null)}
+              >
+                Batal
+              </Button>
+
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+              >
+                Hapus
+              </Button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {showSuccessAdd && (
+        <div className="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 text-center space-y-4 w-full max-w-sm">
+            <div className="text-green-600 text-4xl">✔</div>
+            <h3 className="text-base font-semibold">Berhasil</h3>
+            <p className="text-sm text-muted-foreground">Realisasi kegiatan berhasil ditambahkan.</p>
+            <Button onClick={() => setShowSuccessAdd(false)} className="w-full">OK</Button>
+          </div>
+        </div>
+      )}
+
+      {showErrorAdd && (
+        <div className="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 text-center space-y-4 w-full max-w-sm">
+            <div className="text-red-600 text-4xl">✘</div>
+            <h3 className="text-base font-semibold">Gagal</h3>
+            <p className="text-sm text-muted-foreground">{errorMessage || "Gagal menambahkan realiseasi kegiatan."}</p>
+            <Button variant="destructive" onClick={() => setShowErrorAdd(false)} className="w-full">Tutup</Button>
+          </div>
+        </div>
+      )}
+
+      {showSuccessUpdate && (
+        <div className="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 text-center space-y-4 w-full max-w-sm">
+            <div className="text-green-600 text-4xl">✔</div>
+            <h3 className="text-base font-semibold">Berhasil</h3>
+            <p className="text-sm text-muted-foreground">Realisasi kegiatan berhasil diperbarui.</p>
+            <Button onClick={() => setShowSuccessUpdate(false)} className="w-full">OK</Button>
+          </div>
+        </div>
+      )}
+
+      {showErrorUpdate && (
+        <div className="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 text-center space-y-4 w-full max-w-sm">
+            <div className="text-red-600 text-4xl">✘</div>
+            <h3 className="text-base font-semibold">Gagal</h3>
+            <p className="text-sm text-muted-foreground">Gagal memperbarui realiseasi kegiatan.</p>
+            <Button variant="destructive" onClick={() => setShowErrorUpdate(false)} className="w-full">Tutup</Button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

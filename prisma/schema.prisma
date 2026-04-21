@@ -7,22 +7,368 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model PencairanDana {
-  id            BigInt   @id @default(autoincrement())
-  dasarDokumen  String
-  danaMitra     String
-  jumlah        Decimal  @db.Decimal(15, 2)
-  tanggal       DateTime
-  catatan       String?
-  status        Status
+/**
+ * ================= ENUM =================
+ */
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+enum RoleUser {
+  UNIT_KERJA
+  SUB_UNIT
 }
 
-enum Status {
+enum StatusPencairan {
   Draft
   Diajukan
   Disetujui
   Ditolak
+}
+
+enum StatusRepository {
+  Aktif
+  Kadaluarsa
+  DalamPerpanjangan
+  TidakAktif
+}
+
+enum JenisDokumen {
+  MOU
+  MOA
+  IA
+}
+
+enum SkalaKerjasama {
+  Nasional
+  Internasional
+}
+
+/**
+ * ================= LOGIN =================
+ */
+model UnitKerja {
+  id BigInt @id @default(autoincrement())
+
+  kode  String  @unique
+  nama  String
+  email String?
+
+  createdAt DateTime @default(now())
+
+  users    User[]
+  subUnits SubUnit[]
+
+  repositories Repository[] @relation("UnitCreatedRepositories")
+}
+
+model SubUnit {
+  id BigInt @id @default(autoincrement())
+
+  kode String @unique
+  nama String
+
+  unitKerjaId BigInt
+  unitKerja   UnitKerja @relation(fields: [unitKerjaId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  users User[]
+
+  repositories Repository[] @relation("SubUnitCreatedRepositories")
+}
+
+model User {
+  id BigInt @id @default(autoincrement())
+
+  nama     String
+  email    String  @unique
+  password String?
+
+  role RoleUser @default(UNIT_KERJA)
+
+  unitId BigInt?
+  unit   UnitKerja? @relation(fields: [unitId], references: [id])
+
+  subUnitId BigInt?
+  subUnit   SubUnit? @relation(fields: [subUnitId], references: [id])
+
+  phone     String?
+  facebook  String?
+  twitter   String?
+  instagram String?
+  youtube   String?
+
+  image String?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/**
+ * ================= REPOSITORY =================
+ */
+model Repository {
+  id BigInt @id @default(autoincrement())
+
+  statusDokumen   StatusRepository
+  tanggalMulai    DateTime
+  tanggalBerakhir DateTime
+
+  jenisDokumen   JenisDokumen
+  dasarDokumen   String?
+  nomorDokumen   String
+  judulKerjasama String
+  deskripsi      String?
+  skalaKerjasama SkalaKerjasama
+
+  sumberPendanaan     String
+  jumlahAnggaran      Decimal? @db.Decimal(18, 2)
+  unitPenanggungJawab String
+  namaPenanggungJawab String
+
+  createdByUnitId    BigInt?
+  createdBySubUnitId BigInt?
+
+  // Track original owner (untuk handle klaim)
+  originalUnitId    BigInt?
+  originalSubUnitId BigInt?
+
+  createdByUnit    UnitKerja? @relation("UnitCreatedRepositories", fields: [createdByUnitId], references: [id])
+  createdBySubUnit SubUnit?   @relation("SubUnitCreatedRepositories", fields: [createdBySubUnitId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dokumen        RepositoryDokumen[]
+  penggiat       RepositoryPenggiat[]
+  mitra          RepositoryMitra?
+  bentukKegiatan RepositoryBentukKegiatan[]
+  termin         RepositoryTermin[]
+  realisasi      Realisasi[]
+
+  @@index([createdByUnitId])
+  @@index([createdBySubUnitId])
+}
+
+/**
+ * ================= FILE & LINK DOKUMEN REPOSITORY =================
+ */
+model RepositoryDokumen {
+  id           BigInt @id @default(autoincrement())
+  repositoryId BigInt
+
+  jenis    String
+  fileName String?
+  filePath String?
+  fileSize Int?
+  linkUrl  String?
+
+  createdAt DateTime @default(now())
+
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@index([repositoryId])
+}
+
+/**
+ * ================= REPOSITORY PENGGIAT =================
+ */
+model RepositoryPenggiat {
+  id           BigInt @id @default(autoincrement())
+  repositoryId BigInt
+
+  penggiatId BigInt?
+
+  pihakKe                String
+  instansi               String
+  namaPenandatangan      String
+  jabatanPenandatangan   String
+  namaPenanggungJawab    String
+  jabatanPenanggungJawab String
+  emailPenanggungJawab   String
+
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  penggiat   Penggiat?  @relation(fields: [penggiatId], references: [id])
+
+  @@index([repositoryId])
+  @@index([penggiatId])
+}
+
+/**
+ * ================= REPOSITORY MITRA =================
+ */
+model RepositoryMitra {
+  id           BigInt @id @default(autoincrement())
+  repositoryId BigInt @unique
+
+  klasifikasiMitra String
+  namaMitra        String
+  bidangUsaha      String
+  negara           String
+  provinsi         String
+  alamat           String
+  npwp             String?
+  noTelp           String?
+  noFax            String?
+  email            String?
+  website          String?
+
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+}
+
+/**
+ * ================= REPOSITORY BENTUK KEGIATAN =================
+ */
+model RepositoryBentukKegiatan {
+  id           BigInt @id @default(autoincrement())
+  repositoryId BigInt
+
+  bentuk     String
+  penerimaan Decimal? @db.Decimal(18, 2)
+  volume     String?
+  satuan     String?
+  sasaran    String
+  indikator  String?
+  keterangan String?
+
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@index([repositoryId])
+}
+
+/**
+ * ================= REPOSITORY TERMIN =================
+ */
+model RepositoryTermin {
+  id           BigInt @id @default(autoincrement())
+  repositoryId BigInt
+
+  terminKe Int
+  bulan    String
+  tahun    Int
+  jumlah   Decimal @db.Decimal(18, 2)
+
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@index([repositoryId])
+}
+
+/**
+ * ================= REPOSITORY PENGGIAT =================
+ */
+model Penggiat {
+  id BigInt @id @default(autoincrement())
+
+  namaInstansi     String  @unique
+  klasifikasiMitra String?
+  bidangUsaha      String?
+  negara           String?
+  provinsi         String?
+  alamat           String?
+  npwp             String?
+  noTelp           String?
+  noFax            String?
+  email            String?
+  website          String?
+
+  createdAt DateTime @default(now())
+
+  repositories RepositoryPenggiat[]
+}
+
+/**
+ * ================= REALISASI KEGIATAN =================
+ */
+model Realisasi {
+  id BigInt @id @default(autoincrement())
+
+  repositoryId BigInt
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  bentukKegiatan String
+  judulKegiatan  String
+  tanggalKegiatan DateTime
+
+  jumlahDosen     Int
+  jumlahMahasiswa Int
+
+  hasilKegiatan String
+
+  anggaran Decimal? @db.Decimal(18, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dokumen RealisasiDokumen[]
+
+  @@index([repositoryId])
+}
+
+model RealisasiDokumen {
+  id BigInt @id @default(autoincrement())
+
+  realismoId BigInt
+  realismo   Realisasi @relation(fields: [realismoId], references: [id], onDelete: Cascade)
+
+  fileName String
+  filePath String
+  fileSize Int
+
+  createdAt DateTime @default(now())
+
+  @@index([realismoId])
+}
+
+/**
+ * ================= PENCAIRAN DANA =================
+ */
+model PencairanDana {
+  id           BigInt   @id @default(autoincrement())
+  dasarDokumen String
+  danaMitra    String
+  jumlah       Decimal  @db.Decimal(15, 2)
+  tanggal      DateTime
+  catatan     String?
+
+  status StatusPencairan @default(Draft)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dokumen PencairanDokumen[]
+}
+
+model TargetKerjasama {
+  id    BigInt  @id @default(autoincrement())
+  tahun Int     @unique
+
+  mou    Int @default(0)
+  moa    Int @default(0)
+  ia    Int @default(0)
+
+  aktif        Int @default(0)
+  perpanjangan Int @default(0)
+  kadaluarsa   Int @default(0)
+  tidakAktif   Int @default(0)
+
+  status String @default("Open")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PencairanDokumen {
+  id          BigInt @id @default(autoincrement())
+  pencairanId BigInt
+
+  jenisDokumen String
+  fileName     String
+  filePath     String
+  fileSize     Int
+
+  createdAt DateTime @default(now())
+
+  pencairan PencairanDana @relation(fields: [pencairanId], references: [id], onDelete: Cascade)
+
+  @@index([pencairanId])
 }
