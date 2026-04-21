@@ -47,6 +47,23 @@ type RepoData = {
   tanggalMulai: string;
 };
 
+type RealisasiData = {
+  id: string;
+  repositoryId: string;
+  bentukKegiatan: string;
+  judulKegiatan: string;
+  tanggalKegiatan: string;
+  jumlahDosen: number;
+  jumlahMahasiswa: number;
+  hasilKegiatan: string;
+  anggaran: number | null;
+  repository: {
+    id: string;
+    jenisDokumen: string;
+    tanggalMulai: string;
+  };
+};
+
 function ProgressBar({ value, max, color }: { value: number; max: number; color: string }) {
   const pct = max === 0 ? 0 : Math.min(100, Math.round((value / max) * 100));
   return (
@@ -62,6 +79,7 @@ export default function CapaianKerjasamaPage() {
   const [loading, setLoading] = useState(true);
   const [targetData, setTargetData] = useState<TargetData[]>([]);
   const [repoData, setRepoData] = useState<RepoData[]>([]);
+  const [realisasiData, setRealisasiData] = useState<RealisasiData[]>([]);
   const [activeYear, setActiveYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
@@ -69,10 +87,12 @@ export default function CapaianKerjasamaPage() {
     Promise.all([
       fetch("/api/target-kerjasama").then((r) => r.json()),
       fetch("/api/repository/mydata", { credentials: "include" }).then((r) => r.json()),
+      fetch("/api/realisasi").then((r) => r.json()),
     ])
-      .then(([targets, repos]) => {
+      .then(([targets, repos, realizasis]) => {
         if (Array.isArray(targets)) setTargetData(targets);
         if (Array.isArray(repos)) setRepoData(repos);
+        if (Array.isArray(realizasis)) setRealisasiData(realizasis);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -80,10 +100,11 @@ export default function CapaianKerjasamaPage() {
   const availableYears = useMemo(() => {
     const fromTargets = targetData.map((t) => t.tahun);
     const fromRepos = repoData.map((r) => new Date(r.tanggalMulai).getFullYear());
-    const all = [...fromTargets, ...fromRepos];
+    const fromRealisasi = realisasiData.map((r) => new Date(r.tanggalKegiatan).getFullYear());
+    const all = [...fromTargets, ...fromRepos, ...fromRealisasi];
     const unique = Array.from(new Set(all)).sort((a, b) => b - a);
     return unique.length > 0 ? unique : [new Date().getFullYear()];
-  }, [targetData, repoData]);
+  }, [targetData, repoData, realisasiData]);
 
   const target = targetData.find((t) => t.tahun === activeYear);
   const reposThisYear = repoData.filter((r) => new Date(r.tanggalMulai).getFullYear() === activeYear);
@@ -91,9 +112,11 @@ export default function CapaianKerjasamaPage() {
   const targetMou = target?.mou ?? 0;
   const targetMoa = target?.moa ?? 0;
   const targetIa = target?.ia ?? 0;
-  const realMou = reposThisYear.filter((r) => r.jenisDokumen === "MOU").length;
-  const realMoa = reposThisYear.filter((r) => r.jenisDokumen === "MOA").length;
-  const realIa = reposThisYear.filter((r) => r.jenisDokumen === "IA").length;
+
+  const realizasisThisYear = realisasiData.filter((r) => new Date(r.tanggalKegiatan).getFullYear() === activeYear);
+  const realMou = realizasisThisYear.filter((r) => r.repository?.jenisDokumen === "MOU").length;
+  const realMoa = realizasisThisYear.filter((r) => r.repository?.jenisDokumen === "MOA").length;
+  const realIa = realizasisThisYear.filter((r) => r.repository?.jenisDokumen === "IA").length;
   const totalTarget = targetMou + targetMoa + targetIa;
   const totalReal = realMou + realMoa + realIa;
 
@@ -116,8 +139,8 @@ export default function CapaianKerjasamaPage() {
   const trendPct = totalTarget === 0 ? 0 : Math.round(((totalReal - totalTarget) / totalTarget) * 100);
 
   const lastYear = activeYear - 1;
-  const lastYearRepos = repoData.filter((r) => new Date(r.tanggalMulai).getFullYear() === lastYear);
-  const lastYearCount = lastYearRepos.length;
+  const lastYearRealisasi = realisasiData.filter((r) => new Date(r.tanggalKegiatan).getFullYear() === lastYear);
+  const lastYearCount = lastYearRealisasi.length;
 
   if (loading) {
     return (
