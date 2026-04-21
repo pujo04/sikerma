@@ -22,9 +22,9 @@ import {
 type Option =
   | string
   | {
-      label: string;
-      value: string | number;
-    };
+    label: string;
+    value: string | number;
+  };
 
 interface SearchableSelectProps {
   label?: string;
@@ -50,6 +50,7 @@ export function SearchableSelect({
   onChange,
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
 
   const labelClass = size === "xs" ? "text-xs" : "text-sm";
   const fieldClass = "text-sm";
@@ -60,18 +61,17 @@ export function SearchableSelect({
   const getValue = (opt: Option) =>
     typeof opt === "string" ? opt : opt.value;
 
-  const selectedOption = options.find(
-    (opt) => getValue(opt) === value
+  const selectedOption = React.useMemo(
+    () => options.find((opt) => getValue(opt) === value),
+    [options, value]
   );
 
-  const selectedLabel = selectedOption
-    ? getLabel(selectedOption)
-    : "";
+  const selectedLabel = selectedOption ? getLabel(selectedOption) : "";
 
   return (
-    <div className="space-y-1 relative w-full">
+    <div className="space-y-1 w-full">
       {label && (
-        <label className={cn(labelClass, "font-medium")}>
+        <label className={cn(labelClass, "font-medium block")}>
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
@@ -84,69 +84,87 @@ export function SearchableSelect({
             role="combobox"
             disabled={disabled}
             className={cn(
-              "w-full px-3 py-2",
-              "flex justify-between items-center",
-              "text-left font-normal",
+              "w-full min-h-10 px-3 py-2 flex justify-between items-center gap-2 shrink-0",
+              "text-left font-normal border-input whitespace-nowrap",
+              "min-w-[180px]",
               fieldClass,
-              !value && "text-muted-foreground",
+              !value && "text-muted-foreground"
             )}
           >
-            <span className="truncate">
+            <span className="truncate flex-1">
               {value ? selectedLabel : placeholder}
             </span>
-            <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50 shrink-0" />
+            <ChevronsUpDown className="h-4 w-4 opacity-50 shrink-0" />
           </Button>
         </PopoverTrigger>
 
+        {/* POPUP WIDTH SYNC */}
         <PopoverContent
-          side="bottom"
           align="start"
           sideOffset={4}
-          className="
-            z-[10000]
-            p-1
-            w-[--radix-popover-trigger-width]
-          "
+          className="p-0 z-[10000] shadow-md border bg-popover"
+          style={{
+            width: "var(--radix-popover-trigger-width)",
+            minWidth: "180px",
+            maxWidth: "300px",
+          }}
+          side="bottom"
         >
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder="Ketik untuk mencari..."
               className="h-9 px-3 text-sm"
+              value={search}
+              onValueChange={setSearch}
             />
 
-            <CommandEmpty className="px-3 py-2 text-sm text-muted-foreground">
+            <CommandEmpty className="px-3 py-4 text-sm text-center text-muted-foreground">
               Data tidak ditemukan
             </CommandEmpty>
 
-            <CommandGroup className="max-h-60 overflow-y-auto">
-              {options.map((opt) => {
-                const optValue = getValue(opt);
-                const optLabel = getLabel(opt);
+            <CommandGroup className="max-h-[300px] overflow-y-auto overflow-x-hidden p-1">
+              {options
+                .filter((opt) =>
+                  getLabel(opt)
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                )
+                .map((opt, index) => {
+                  const optValue = getValue(opt);
+                  const optLabel = getLabel(opt);
 
-                return (
-                  <CommandItem
-                    key={String(optValue)}
-                    value={String(optLabel)}
-                    onSelect={() => {
-                      onChange(optValue);
-                      setOpen(false);
-                    }}
-                    className="flex items-start gap-2 px-3 py-2 text-sm"
-                  >
-                    <Check
-                      className={cn(
-                        "mt-0.5 h-4 w-4 shrink-0",
-                        value === optValue
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )}
-                    />
-                    <span className="break-words">
-                      {optLabel}
-                    </span>
-                  </CommandItem>
-                );
-              })}
+                  return (
+                    <CommandItem
+                      key={`${index}-${String(optValue)}`}
+                      value={String(optValue)}
+                      onSelect={() => {
+                        onChange(optValue);
+                        setOpen(false);
+                        setSearch("");
+                      }}
+                      className="
+                        flex items-start gap-2
+                        px-3 py-3 text-sm
+                        cursor-pointer
+                        rounded-sm
+                        whitespace-normal
+                        break-words
+                        w-full
+                      "
+                    >
+                      <Check
+                        className={cn(
+                          "mt-1 h-4 w-4 shrink-0",
+                          value === optValue ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+
+                      <span className="flex-1 leading-relaxed">
+                        {optLabel}
+                      </span>
+                    </CommandItem>
+                  );
+                })}
             </CommandGroup>
           </Command>
         </PopoverContent>

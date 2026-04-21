@@ -166,7 +166,7 @@ export default function TargetKerjasamaPage() {
                   <h1 className="text-xl md:text-2xl font-bold">Target Kerjasama</h1>
                   <p className="text-sm text-muted-foreground mt-0.5">Pengaturan target tahunan capaian kerjasama</p>
                 </div>
-                <Button size="sm" onClick={() => setShowAddModal(true)}>
+                <Button size="sm" variant="outline" onClick={() => setShowAddModal(true)}>
                   <Plus className="w-4 h-4 mr-1" /> Add
                 </Button>
               </div>
@@ -193,19 +193,24 @@ export default function TargetKerjasamaPage() {
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm border-t">
-                    <thead className="bg-muted/40">
+                  <table className="w-full text-sm">
+                    <thead className="bg-muted/40 border-b-2 border-primary/30">
                       <tr>
-                        <th rowSpan={2} className="px-3 py-2">No</th>
-                        <th rowSpan={2} className="px-3 py-2">Tahun</th>
-                        <th colSpan={3} className="px-3 py-2 text-center">Jenis Kerjasama</th>
-                        <th colSpan={4} className="px-3 py-2 text-center">Status Kerjasama</th>
-                        <th rowSpan={2} className="px-3 py-2">Status</th>
-                        <th rowSpan={2} className="px-3 py-2 text-center">Action</th>
+                        <th rowSpan={2} className="px-3 py-3 text-left font-semibold">No</th>
+                        <th rowSpan={2} className="px-3 py-3 text-left font-semibold">Tahun</th>
+                        <th colSpan={3} className="px-3 py-3 text-center font-semibold border-l">Jenis Kerjasama</th>
+                        <th colSpan={4} className="px-3 py-3 text-center font-semibold border-l">Status Kerjasama</th>
+                        <th rowSpan={2} className="px-3 py-3 text-left font-semibold border-l">Status</th>
+                        <th rowSpan={2} className="px-3 py-3 text-center font-semibold border-l">Action</th>
                       </tr>
-                      <tr>
-                        <th className="px-3 py-2">MoU</th><th className="px-3 py-2">MoA</th><th className="px-3 py-2">IA</th>
-                        <th className="px-3 py-2">Aktif</th><th className="px-3 py-2">Perpanjangan</th><th className="px-3 py-2">Kadaluarsa</th><th className="px-3 py-2">Tidak Aktif</th>
+                      <tr className="border-b border-primary/20">
+                        <th className="px-3 py-2 text-center font-medium text-muted-foreground">MoU</th>
+                        <th className="px-3 py-2 text-center font-medium text-muted-foreground">MoA</th>
+                        <th className="px-3 py-2 text-center font-medium text-muted-foreground">IA</th>
+                        <th className="px-3 py-2 text-center font-medium text-muted-foreground">Aktif</th>
+                        <th className="px-3 py-2 text-center font-medium text-muted-foreground">Perpanjangan</th>
+                        <th className="px-3 py-2 text-center font-medium text-muted-foreground">Kadaluarsa</th>
+                        <th className="px-3 py-2 text-center font-medium text-muted-foreground">Tidak Aktif</th>
                       </tr>
                     </thead>
                     <tbody>
