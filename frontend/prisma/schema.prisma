@@ -1,0 +1,240 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        BigInt   @id @default(autoincrement())
+  email     String   @unique
+  password  String?
+  nama      String?
+  role      String   @default("UNIT_KERJA")
+  unitId    BigInt?
+  subUnitId BigInt?
+  isActive  Boolean  @default(true)
+  phone     String?
+  facebook  String?
+  twitter   String?
+  instagram String?
+  youtube   String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Unit {
+  id        BigInt    @id @default(autoincrement())
+  kode      String?
+  nama      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  subUnits  SubUnit[]
+}
+
+model SubUnit {
+  id           BigInt   @id @default(autoincrement())
+  kode         String?
+  nama         String
+  unitId       BigInt
+  unit         Unit     @relation(fields: [unitId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Repository {
+  id                  BigInt                    @id @default(autoincrement())
+  statusDokumen       String?                   @default("Aktif")
+  tanggalMulai        DateTime                  @default(now())
+  tanggalBerakhir     DateTime                  @default(now())
+  jenisDokumen        String?
+  dasarDokumen        String?
+  nomorDokumen        String?
+  judulKerjasama      String?
+  deskripsi           String?
+  skalaKerjasama      String?
+  sumberPendanaan     String?
+  jumlahAnggaran      Float?
+  unitPenanggungJawab String?
+  namaPenanggungJawab  String?
+  dokumen             RepositoryDokumen[]
+  penggiat            RepositoryPenggiat[]
+  mitra               RepositoryMitra[]
+  bentukKegiatan      RepositoryBentukKegiatan[]
+  termin              RepositoryTermin[]
+  createdByUnitId     BigInt?
+  createdBySubUnitId    BigInt?
+  originalUnitId       BigInt?
+  originalSubUnitId    BigInt?
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+}
+
+model RepositoryDokumen {
+  id            BigInt     @id @default(autoincrement())
+  repositoryId  BigInt
+  repository    Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  jenisDokumen  String
+  namaFile      String?
+  filePath      String?
+  fileSize      Int?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model RepositoryMitra {
+  id              BigInt     @id @default(autoincrement())
+  repositoryId    BigInt
+  repository      Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  klasifikasiMitra String?
+  namaMitra       String?
+  bidangUsaha     String?
+  negara          String?
+  provinsi        String?
+  alamat          String?
+  npwp            String?
+  noTelp          String?
+  noFax           String?
+  email           String?
+  website         String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model RepositoryPenggiat {
+  id                   BigInt      @id @default(autoincrement())
+  repositoryId         BigInt
+  repository           Repository  @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  penggiatId           BigInt?
+  penggiat             Penggiat?   @relation(fields: [penggiatId], references: [id], onDelete: SetNull)
+  instansi             String?
+  namaPenandatangan    String?
+  jabatanPenandatangan String?
+  emailPenandatangan   String?
+  nipPenandatangan     String?
+  namaPenanggungJawab  String?
+  jabatanPenanggungJawab String?
+  emailPenanggungJawab String?
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+}
+
+model Penggiat {
+  id                    BigInt                @id @default(autoincrement())
+  namaInstansi          String?               @unique
+  namaPenanggungJawab   String?
+  email                 String?
+  noTelp                String?
+  klasifikasiMitra      String?
+  bidangUsaha           String?
+  negara                String?
+  provinsi              String?
+  alamat                String?
+  npwp                  String?
+  noFax                 String?
+  website               String?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  repositoryPenggiat    RepositoryPenggiat[]
+}
+
+model RepositoryBentukKegiatan {
+  id            BigInt      @id @default(autoincrement())
+  repositoryId  BigInt
+  repository    Repository  @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  bentuk        String?
+  penerimaan    Float?
+  volume        String?
+  satuan        String?
+  sasaran       String?
+  indikator     String?
+  keterangan    String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model RepositoryTermin {
+  id            BigInt      @id @default(autoincrement())
+  repositoryId  BigInt
+  repository    Repository  @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  terminKe      Int
+  bulan         String?
+  tahun         String?
+  jumlah        Float?
+  status        String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model PencairanDana {
+  id             BigInt               @id @default(autoincrement())
+  dasarDokumen   String?
+  danaMitra      String?
+  jumlah         Float?
+  tanggal        DateTime?
+  catatan        String?
+  status         String?
+  tanggalSurat   String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  dokumen        PencairanDanaDokumen[]
+}
+
+model PencairanDanaDokumen {
+  id              BigInt       @id @default(autoincrement())
+  pencairanDanaId BigInt
+  pencairanDana   PencairanDana @relation(fields: [pencairanDanaId], references: [id], onDelete: Cascade)
+  jenisDokumen    String
+  namaFile        String?
+  filePath        String?
+  fileSize        Int?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model TargetKerjasama {
+  id           BigInt   @id @default(autoincrement())
+  tahun        Int
+  mou          Int?
+  moa          Int?
+  ia           Int?
+  aktif        Int?
+  perpanjangan Int?
+  kadaluarsa   Int?
+  tidakAktif   Int?
+  status       String?
+  targetIku    Int?
+  targetNonIku Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Realisasi {
+  id              BigInt      @id @default(autoincrement())
+  repositoryId    BigInt
+  bentukKegiatan  String?
+  judulKegiatan   String?
+  tanggalKegiatan DateTime?
+  jumlahDosen    Int?
+  jumlahMahasiswa Int?
+  hasilKegiatan   String?
+  anggaran       Float?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model RealisasiDokumen {
+  id            BigInt   @id @default(autoincrement())
+  realisationId BigInt
+  fileName      String?
+  filePath      String?
+  fileSize      Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

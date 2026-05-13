@@ -1,79 +1,51 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import * as React from "react"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command";
+} from "@/components/ui/command"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-
-/* ================= TYPES ================= */
-
-type Option =
-  | string
-  | {
-    label: string;
-    value: string | number;
-  };
+} from "@/components/ui/popover"
 
 interface SearchableSelectProps {
-  label?: string;
-  value: string | number;
-  options: Option[];
-  placeholder?: string;
-  disabled?: boolean;
-  size?: "sm" | "xs";
-  required?: boolean;
-  onChange: (value: string | number) => void;
+  label?: string
+  value: string
+  options: string[]
+  placeholder?: string
+  disabled?: boolean
+  size?: "sm" | "xs"
+  onChange: (value: string) => void
 }
-
-/* ================= COMPONENT ================= */
 
 export function SearchableSelect({
   label,
   value,
   options,
   placeholder = "- Pilih -",
-  disabled = false,
+  disabled,
   size = "sm",
-  required = true,
   onChange,
 }: SearchableSelectProps) {
-  const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
+  const [open, setOpen] = React.useState(false)
 
-  const labelClass = size === "xs" ? "text-xs" : "text-sm";
-  const fieldClass = "text-sm";
-
-  const getLabel = (opt: Option) =>
-    typeof opt === "string" ? opt : opt.label;
-
-  const getValue = (opt: Option) =>
-    typeof opt === "string" ? opt : opt.value;
-
-  const selectedOption = React.useMemo(
-    () => options.find((opt) => getValue(opt) === value),
-    [options, value]
-  );
-
-  const selectedLabel = selectedOption ? getLabel(selectedOption) : "";
+  const labelClass = size === "xs" ? "text-xs" : "text-sm"
+  const fieldClass = "text-sm"
 
   return (
-    <div className="space-y-1 w-full">
+    <div className="space-y-1 relative w-full max-w-full">
       {label && (
-        <label className={cn(labelClass, "font-medium block")}>
-          {label}
-          {required && <span className="text-red-500"> *</span>}
+        <label className={cn(labelClass, "font-medium")}>
+          {label} <span className="text-red-500">*</span>
         </label>
       )}
 
@@ -84,91 +56,84 @@ export function SearchableSelect({
             role="combobox"
             disabled={disabled}
             className={cn(
-              "w-full min-h-10 px-3 py-2 flex justify-between items-center gap-2 shrink-0",
-              "text-left font-normal border-input whitespace-nowrap",
-              "min-w-[180px]",
+              "w-full max-w-full px-3 py-2",
+              "flex items-start justify-between",
+              "text-left font-normal",
+              "whitespace-normal break-words",
               fieldClass,
               !value && "text-muted-foreground"
             )}
           >
-            <span className="truncate flex-1">
-              {value ? selectedLabel : placeholder}
+            <span className="flex-1 block break-words">
+              {value || placeholder}
             </span>
-            <ChevronsUpDown className="h-4 w-4 opacity-50 shrink-0" />
+            <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50 shrink-0" />
           </Button>
         </PopoverTrigger>
 
-        {/* POPUP WIDTH SYNC */}
+        {/* ================= POPOVER ================= */}
         <PopoverContent
+          side="bottom"
           align="start"
           sideOffset={4}
-          className="p-0 z-[10000] shadow-md border bg-popover"
-          style={{
-            width: "var(--radix-popover-trigger-width)",
-            minWidth: "180px",
-            maxWidth: "300px",
-          }}
-          side="bottom"
+          className={cn(
+            "z-[1000] p-1",
+            "w-[--radix-popover-trigger-width]",
+            "max-w-full",
+            "overflow-hidden"
+          )}
         >
-          <Command shouldFilter={false}>
+          <Command className="w-full max-w-full overflow-hidden">
             <CommandInput
               placeholder="Ketik untuk mencari..."
               className="h-9 px-3 text-sm"
-              value={search}
-              onValueChange={setSearch}
             />
 
-            <CommandEmpty className="px-3 py-4 text-sm text-center text-muted-foreground">
+            <CommandEmpty className="px-3 py-2 text-sm text-muted-foreground">
               Data tidak ditemukan
             </CommandEmpty>
 
-            <CommandGroup className="max-h-[300px] overflow-y-auto overflow-x-hidden p-1">
-              {options
-                .filter((opt) =>
-                  getLabel(opt)
-                    .toLowerCase()
-                    .includes(search.toLowerCase())
-                )
-                .map((opt, index) => {
-                  const optValue = getValue(opt);
-                  const optLabel = getLabel(opt);
+            <CommandGroup className="max-h-60 overflow-y-auto overflow-x-hidden">
+              {options.map((opt) => (
+                <CommandItem
+                  key={opt}
+                  value={opt}
+                  onSelect={() => {
+                    onChange(opt)
+                    setOpen(false)
+                  }}
+                  className={cn(
+                    "px-3 py-2 text-sm font-normal",
+                    "flex items-start gap-2",
+                    "max-w-full",
+                    "whitespace-normal break-words",
+                    "leading-snug",
+                    "truncate-none"
+                  )}
+                >
+                  <Check
+                    className={cn(
+                      "mt-0.5 h-4 w-4 shrink-0",
+                      value === opt ? "opacity-100" : "opacity-0"
+                    )}
+                  />
 
-                  return (
-                    <CommandItem
-                      key={`${index}-${String(optValue)}`}
-                      value={String(optValue)}
-                      onSelect={() => {
-                        onChange(optValue);
-                        setOpen(false);
-                        setSearch("");
-                      }}
-                      className="
-                        flex items-start gap-2
-                        px-3 py-3 text-sm
-                        cursor-pointer
-                        rounded-sm
-                        whitespace-normal
-                        break-words
-                        w-full
-                      "
-                    >
-                      <Check
-                        className={cn(
-                          "mt-1 h-4 w-4 shrink-0",
-                          value === optValue ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-
-                      <span className="flex-1 leading-relaxed">
-                        {optLabel}
-                      </span>
-                    </CommandItem>
-                  );
-                })}
+                  <span
+                    className="
+                      block flex-1
+                      max-w-full
+                      break-words
+                      overflow-hidden
+                    "
+                  >
+                    {opt}
+                  </span>
+                </CommandItem>
+              ))}
             </CommandGroup>
           </Command>
         </PopoverContent>
       </Popover>
     </div>
-  );
+  )
 }

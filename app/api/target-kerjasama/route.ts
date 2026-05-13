@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-/**
- * GET Target Kerjasama
- */
 export async function GET() {
   try {
     const data = await prisma.targetKerjasama.findMany({
@@ -11,11 +8,7 @@ export async function GET() {
     });
 
     return NextResponse.json(
-      JSON.parse(
-        JSON.stringify(data, (_, value) =>
-          typeof value === "bigint" ? value.toString() : value
-        )
-      )
+      JSON.parse(JSON.stringify(data, (_, v) => typeof v === "bigint" ? v.toString() : v))
     );
   } catch (error) {
     console.error(error);
@@ -23,9 +16,6 @@ export async function GET() {
   }
 }
 
-/**
- * POST Target Kerjasama
- */
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -45,11 +35,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(
-      JSON.parse(
-        JSON.stringify(target, (_, value) =>
-          typeof value === "bigint" ? value.toString() : value
-        )
-      )
+      JSON.parse(JSON.stringify(target, (_, v) => typeof v === "bigint" ? v.toString() : v))
     );
   } catch (error) {
     console.error(error);
