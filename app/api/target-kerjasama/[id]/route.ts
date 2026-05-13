@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-/**
- * GET Target Kerjasama by ID
- */
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -19,11 +16,7 @@ export async function GET(
     }
 
     return NextResponse.json(
-      JSON.parse(
-        JSON.stringify(data, (_, value) =>
-          typeof value === "bigint" ? value.toString() : value
-        )
-      )
+      JSON.parse(JSON.stringify(data, (_, v) => typeof v === "bigint" ? v.toString() : v))
     );
   } catch (error) {
     console.error(error);
@@ -31,9 +24,6 @@ export async function GET(
   }
 }
 
-/**
- * PUT Target Kerjasama
- */
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -58,11 +48,7 @@ export async function PUT(
     });
 
     return NextResponse.json(
-      JSON.parse(
-        JSON.stringify(target, (_, value) =>
-          typeof value === "bigint" ? value.toString() : value
-        )
-      )
+      JSON.parse(JSON.stringify(target, (_, v) => typeof v === "bigint" ? v.toString() : v))
     );
   } catch (error) {
     console.error(error);
@@ -70,19 +56,13 @@ export async function PUT(
   }
 }
 
-/**
- * DELETE Target Kerjasama
- */
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    await prisma.targetKerjasama.delete({
-      where: { id: BigInt(id) },
-    });
-
+    await prisma.targetKerjasama.delete({ where: { id: BigInt(id) } });
     return NextResponse.json({ message: "Berhasil hapus data" });
   } catch (error) {
     console.error(error);

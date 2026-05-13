@@ -122,28 +122,16 @@ const menuItems: MenuItem[] = [
 
 /* ================= COMPONENT ================= */
 
-export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
+export function Sidebar({
+  open,
+  onOpenChange,
+  onExpandChange,
+}: SidebarProps) {
   const [hovered, setHovered] = useState(false);
-  const [pinned, setPinned] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("sidebar:pinned") === "true";
-  });
-
+  const [pinned, setPinned] = useState(false);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
 
   const expanded = pinned || hovered;
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("sidebar:pinned", String(pinned));
-    }
-  }, [pinned]);
-
-  useEffect(() => {
-    if (pinned) {
-      setHovered(false);
-    }
-  }, [pinned]);
 
   /* sync sidebar state ke page */
   useEffect(() => {
@@ -170,7 +158,7 @@ export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
           open ? "translate-x-0 w-64" : "-translate-x-full w-64",
           /* desktop */
           "md:w-[72px]",
-          expanded && "md:w-64",
+          expanded && "md:w-64"
         )}
       >
         <div className="flex flex-col h-full">
@@ -178,7 +166,7 @@ export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
           <div
             className={cn(
               "flex items-center justify-between border-b border-sidebar-border transition-all",
-              expanded ? "px-4 py-4" : "p-4",
+              expanded ? "px-4 py-4" : "p-4"
             )}
           >
             <div className="flex items-center gap-2">
@@ -196,7 +184,7 @@ export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
                     Sikerma
                   </h2>
                   <p className="text-xs text-sidebar-foreground/60">
-                    Sistem Kerjasama Institusi
+                    Sistem Kerja Sama
                   </p>
                 </div>
               )}
@@ -243,7 +231,7 @@ export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
                           expanded || open
                             ? "px-3 py-2 text-sm"
                             : "p-3 justify-center",
-                          "text-sidebar-foreground/80 hover:bg-sidebar-accent/40",
+                          "text-sidebar-foreground/80 hover:bg-sidebar-accent/40"
                         )}
                       >
                         <Icon className="w-5 h-5 shrink-0" />
@@ -261,7 +249,7 @@ export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
                           expanded || open
                             ? "px-3 py-2 text-sm"
                             : "p-3 justify-center",
-                          "text-sidebar-foreground/80 hover:bg-sidebar-accent/40",
+                          "text-sidebar-foreground/80 hover:bg-sidebar-accent/40"
                         )}
                       >
                         <Icon className="w-5 h-5 shrink-0" />
@@ -274,7 +262,7 @@ export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
                               <ChevronDown
                                 className={cn(
                                   "w-4 h-4 transition-transform",
-                                  isOpen && "rotate-180",
+                                  isOpen && "rotate-180"
                                 )}
                               />
                             )}
@@ -284,39 +272,41 @@ export function Sidebar({ open, onOpenChange, onExpandChange }: SidebarProps) {
                     )}
 
                     {/* SUBMENU */}
-                    {(expanded || open) && item.hasSubmenu && isOpen && (
-                      <div className="ml-10 mt-1 space-y-1">
-                        {item.children?.map((sub, i) => {
-                          const SubIcon = sub.icon;
+                    {(expanded || open) &&
+                      item.hasSubmenu &&
+                      isOpen && (
+                        <div className="ml-10 mt-1 space-y-1">
+                          {item.children?.map((sub, i) => {
+                            const SubIcon = sub.icon;
 
-                          return sub.external ? (
-                            <button
-                              key={i}
-                              onClick={() => {
-                                window.open(sub.href!, "_blank");
-                                onOpenChange(false);
-                              }}
-                              className="w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm
+                            return sub.external ? (
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  window.open(sub.href!, "_blank");
+                                  onOpenChange(false);
+                                }}
+                                className="w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm
                                   text-sidebar-foreground/60 hover:bg-sidebar-accent/30"
-                            >
-                              <SubIcon className="w-4 h-4" />
-                              <span>{sub.label}</span>
-                            </button>
-                          ) : (
-                            <Link
-                              key={i}
-                              href={sub.href!}
-                              onClick={() => onOpenChange(false)}
-                              className="w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm
+                              >
+                                <SubIcon className="w-4 h-4" />
+                                <span>{sub.label}</span>
+                              </button>
+                            ) : (
+                              <Link
+                                key={i}
+                                href={sub.href!}
+                                onClick={() => onOpenChange(false)}
+                                className="w-full flex items-center gap-3 px-3 py-1.5 rounded-md text-sm
                                   text-sidebar-foreground/60 hover:bg-sidebar-accent/30"
-                            >
-                              <SubIcon className="w-4 h-4" />
-                              <span>{sub.label}</span>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    )}
+                              >
+                                <SubIcon className="w-4 h-4" />
+                                <span>{sub.label}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
                   </div>
                 );
               })}
